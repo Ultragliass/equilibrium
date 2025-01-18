@@ -1,6 +1,6 @@
 extends Control
 
-var drop_preview: CenterContainer = null
+var drop_preview: Control = null
 
 var grid = []
 var cell_size = Vector2(100, 100)
@@ -22,48 +22,58 @@ func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2):
 		for j in range(columns):
 			grid[i][j] = null
 
-func can_place_item_at(grid_x: int, grid_y: int, item_width: int, item_height: int, moving_item: Node = null) -> bool:
-	for i in range(item_height):
-		for j in range(item_width):
-			var cell_x = grid_x + j
-			var cell_y = grid_y + i
+func can_place_item_at(grid_x: int, grid_y: int, item: Node) -> bool:
+	var shape = item.shape
+	for row in range(shape.size()):
+		for col in range(shape[row].size()):
+			if shape[row][col] == 1:
+				var cell_x = grid_x + col
+				var cell_y = grid_y + row
 
-			if cell_x >= columns or cell_y >= rows:
-				print("Out of bounds at: ", Vector2(cell_x, cell_y))
-				return false
+				if cell_x >= columns or cell_y >= rows or cell_x < 0 or cell_y < 0:
+					return false
 
-			if grid[cell_y][cell_x] != null and grid[cell_y][cell_x] != moving_item:
-				print("Cell occupied at: ", Vector2(cell_x, cell_y))
-				return false
+				if grid[cell_y][cell_x] != null and grid[cell_y][cell_x] != item:
+					return false
 
 	return true
 
 
-func place_item_at(grid_x: int, grid_y: int, item: Node, item_width: int, item_height: int) -> bool:
-	if not can_place_item_at(grid_x, grid_y, item_width, item_height, item):
+func place_item_at(grid_x: int, grid_y: int, item: Node) -> bool:
+	if not can_place_item_at(grid_x, grid_y, item):
 		return false
 
-	for i in range(item_height):
-		for j in range(item_width):
-			grid[grid_y + i][grid_x + j] = item
+	for row in range(item.shape.size()):
+		for col in range(item.shape[row].size()):
+			if item.shape[row][col] == 1:
+				grid[grid_y + row][grid_x + col] = item
 
 	item.position = Vector2(grid_x, grid_y) * cell_size
-	item.anchors_preset = Control.PRESET_TOP_LEFT
+
+	item.anchor_left = 0
+	item.anchor_top = 0
+	item.anchor_right = 0
+	item.anchor_bottom = 0
+
+	item.size_flags_horizontal = Control.SIZE_FILL
+	item.size_flags_vertical = Control.SIZE_FILL
+
 	return true
 
+
 func remove_item_from_grid(item: Node):
-	for i in range(rows):
-		for j in range(columns):
-			if grid[i][j] == item:
-				print("Removing item from cell(", j, ", ", i, ")")
-				grid[i][j] = null
+	for row in range(rows):
+		for col in range(columns):
+			if grid[row][col] == item:
+				grid[row][col] = null
+
 
 func _can_drop_data(_pos, data):
-	if data is CenterContainer:
+	if data is Control:
 		var dragging_item = Global.get_drag_item()
 		var grid_coords = get_grid_coordinates(get_global_mouse_position(), dragging_item.width, dragging_item.height)
 
-		if dragging_item and can_place_item_at(grid_coords.x, grid_coords.y, dragging_item.width, dragging_item.height, data):
+		if dragging_item and can_place_item_at(grid_coords.x, grid_coords.y, dragging_item):
 			show_drop_preview(grid_coords, dragging_item)
 			return true
 
@@ -71,25 +81,20 @@ func _can_drop_data(_pos, data):
 
 	return false
 
+
 func _drop_data(_pos, data):
 	var grid_coords = get_grid_coordinates(get_global_mouse_position(), data.width, data.height)
 
-	if can_place_item_at(grid_coords.x, grid_coords.y, data.width, data.height, data):
+	if can_place_item_at(grid_coords.x, grid_coords.y, data):
 		remove_item_from_grid(data)
 		remove_drop_preview()
-		
-		if place_item_at(grid_coords.x, grid_coords.y, data, data.width, data.height):
+
+		if place_item_at(grid_coords.x, grid_coords.y, data):
 			if data.get_parent() != self:
 				data.reparent(self)
 
-			data.position = grid_coords * cell_size
-			data.anchors_preset = Control.PRESET_TOP_LEFT
-			data.anchor_left = 0
-			data.anchor_top = 0
-			data.anchor_right = 0
-			data.anchor_bottom = 0
-			data.modulate.a = 1
 
+			data.position = grid_coords * cell_size
 			print("Item placed successfully at: ", grid_coords)
 		else:
 			print("Failed to place item")
@@ -108,10 +113,10 @@ func get_grid_coordinates(world_position: Vector2, item_width: int, item_height:
 
 	return Vector2(grid_x, grid_y)
 
-func show_drop_preview(grid_coords: Vector2, dragging_item: CenterContainer):
+func show_drop_preview(grid_coords: Vector2, dragging_item: Control):
 	if not drop_preview:
 		drop_preview = dragging_item.duplicate()
-		drop_preview.init(dragging_item.number, dragging_item.width, dragging_item.height)
+		drop_preview.init(dragging_item.number, dragging_item.shape)
 		drop_preview.modulate.a = 0.5
 		add_child(drop_preview)
 

@@ -10,23 +10,18 @@ func _ready():
 	WeekdayGridManager.init(Global.WEEKDAY_GRID_SLOTS.rows, Global.WEEKDAY_GRID_SLOTS.columns, Vector2(Global.cell_size.width, Global.cell_size.height))
 
 	for j in range(NUMBER_OF_ITEMS_TO_SCATTER):
-		var tall = ITEM_SCENE.instantiate()
-		tall.init(j, 1, j + 1)
-		scatter_item(tall)
-		add_child(tall)
-
-		if j != 4:
-			var wide = ITEM_SCENE.instantiate()
-			wide.init(j, j + 1, 1)
-			scatter_item(wide)
-			add_child(wide)
+		var item = ITEM_SCENE.instantiate()
+		var shape = Global.ITEMS["stone"][randi() % Global.ITEMS["stone"].size()]
+		item.init(j, shape)
+		scatter_item(item)
+		add_child(item)
 
 	
-func scatter_item(item: CenterContainer):
+func scatter_item(item: Control):
 	var screen_size = get_viewport_rect().size
 	var scatter_position = Vector2()
-	
-	while scattered_item_positions.size() < NUMBER_OF_ITEMS_TO_SCATTER:
+
+	while true:
 		var edge = randi() % 4
 		match edge:
 			0: scatter_position = Vector2(randf_range(0, screen_size.x - item.size.x), SCATTER_ITEMS_SCREEN_MARGIN)
@@ -35,7 +30,6 @@ func scatter_item(item: CenterContainer):
 			3: scatter_position = Vector2(screen_size.x - item.size.x - SCATTER_ITEMS_SCREEN_MARGIN, randf_range(0, screen_size.y - item.size.y))
 
 		var is_overlapping = false
-
 		for scattered_item_position in scattered_item_positions:
 			if Rect2(scattered_item_position.position, scattered_item_position.size).intersects(Rect2(scatter_position, item.size)):
 				is_overlapping = true
@@ -45,5 +39,3 @@ func scatter_item(item: CenterContainer):
 			item.position = scatter_position
 			scattered_item_positions.append({"position": scatter_position, "size": item.size})
 			return
-			
-		item.position = scatter_position

@@ -2,7 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/item.gd" id="1_3mjbd"]
 
-[node name="Item" type="CenterContainer"]
+[node name="Item" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_3mjbd")
