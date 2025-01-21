@@ -11,7 +11,7 @@ func _ready():
 
 	for j in range(NUMBER_OF_ITEMS_TO_SCATTER):
 		var item = ITEM_SCENE.instantiate()
-		var shape = Global.ITEMS["stone"][randi() % Global.ITEMS["stone"].size()]
+		var shape = Global.ITEMS["iron"][randi() % Global.ITEMS["iron"].size()]
 		item.init(shape)
 		scatter_item(item)
 		add_child(item)

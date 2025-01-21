@@ -23,17 +23,18 @@ func build_shape():
 
 func _get_drag_data(_at_position):
 	Global.drag_item = self
+	Global.is_dragging = true
+	Global.current_rotation = 0
 
 	var drag_preview = duplicate()
 	drag_preview.init(shape)
 	drag_preview.modulate.a = 0.5
 	
-	var preview_control = Control.new()
-	preview_control.add_child(drag_preview)
-	drag_preview.position = -Functions._calculate_drag_item_size()
+	var preview_control = DragPreviewControl.new()
+	preview_control.setup(drag_preview, shape)
+	preview_control.connect("tree_exiting", func(): Global.is_dragging = false)
 
 	set_drag_preview(preview_control)
-	
 	mouse_filter = Control.MOUSE_FILTER_PASS
 
 	return self
