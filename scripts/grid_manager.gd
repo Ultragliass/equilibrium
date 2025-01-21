@@ -71,7 +71,7 @@ func remove_item_from_grid(item: Node):
 func _can_drop_data(_pos, data):
 	if data is Control:
 		var dragging_item = Global.get_drag_item()
-		var grid_coords = get_grid_coordinates(get_global_mouse_position(), dragging_item.width, dragging_item.height)
+		var grid_coords = get_grid_coordinates(get_global_mouse_position())
 
 		if dragging_item and can_place_item_at(grid_coords.x, grid_coords.y, dragging_item):
 			show_drop_preview(grid_coords, dragging_item)
@@ -83,7 +83,7 @@ func _can_drop_data(_pos, data):
 
 
 func _drop_data(_pos, data):
-	var grid_coords = get_grid_coordinates(get_global_mouse_position(), data.width, data.height)
+	var grid_coords = get_grid_coordinates(get_global_mouse_position())
 
 	if can_place_item_at(grid_coords.x, grid_coords.y, data):
 		remove_item_from_grid(data)
@@ -102,21 +102,21 @@ func _drop_data(_pos, data):
 		print("Item cannot be placed at this position")
 
 
-func get_grid_coordinates(world_position: Vector2, item_width: int, item_height: int) -> Vector2:
+func get_grid_coordinates(world_position: Vector2) -> Vector2:
 	var local_position = world_position - global_position
 
 	var grid_x = floor(local_position.x / cell_size.x)
 	var grid_y = floor(local_position.y / cell_size.y)
 
-	grid_x = clamp(grid_x, 0, columns - item_width)
-	grid_y = clamp(grid_y, 0, rows - item_height)
+	grid_x = clamp(grid_x, 0, columns)
+	grid_y = clamp(grid_y, 0, rows)
 
 	return Vector2(grid_x, grid_y)
 
 func show_drop_preview(grid_coords: Vector2, dragging_item: Control):
 	if not drop_preview:
 		drop_preview = dragging_item.duplicate()
-		drop_preview.init(dragging_item.number, dragging_item.shape)
+		drop_preview.init(dragging_item.shape)
 		drop_preview.modulate.a = 0.5
 		add_child(drop_preview)
 
