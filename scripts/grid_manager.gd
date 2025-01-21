@@ -104,13 +104,15 @@ func _drop_data(_pos, data):
 
 func get_grid_coordinates(world_position: Vector2) -> Vector2:
 	var local_position = world_position - global_position
-
+	
+	local_position -= Functions._calculate_drag_item_size()
+	
 	var grid_x = floor(local_position.x / cell_size.x)
 	var grid_y = floor(local_position.y / cell_size.y)
-
+	
 	grid_x = clamp(grid_x, 0, columns)
 	grid_y = clamp(grid_y, 0, rows)
-
+	
 	return Vector2(grid_x, grid_y)
 
 func show_drop_preview(grid_coords: Vector2, dragging_item: Control):
@@ -119,9 +121,8 @@ func show_drop_preview(grid_coords: Vector2, dragging_item: Control):
 		drop_preview.init(dragging_item.shape)
 		drop_preview.modulate.a = 0.5
 		add_child(drop_preview)
-
+	
 	drop_preview.position = grid_coords * cell_size
-	drop_preview.mouse_filter = Control.MOUSE_FILTER_PASS
 
 func remove_drop_preview():
 	if drop_preview:

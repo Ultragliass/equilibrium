@@ -28,12 +28,9 @@ func _get_drag_data(_at_position):
 	drag_preview.init(shape)
 	drag_preview.modulate.a = 0.5
 	
-	var item_width = shape[0].size() * Global.cell_size.width
-	var item_height = shape.size() * Global.cell_size.height
-	
 	var preview_control = Control.new()
 	preview_control.add_child(drag_preview)
-	drag_preview.position = -Vector2(item_width/2, item_height/2)
+	drag_preview.position = -Functions._calculate_drag_item_size()
 
 	set_drag_preview(preview_control)
 	
