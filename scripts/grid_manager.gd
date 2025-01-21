@@ -70,7 +70,7 @@ func remove_item_from_grid(item: Node):
 
 func _can_drop_data(_pos, data):
 	if data is Control:
-		var dragging_item = Global.get_drag_item()
+		var dragging_item = Global.drag_item
 		var grid_coords = get_grid_coordinates(get_global_mouse_position())
 
 		if dragging_item and can_place_item_at(grid_coords.x, grid_coords.y, dragging_item):

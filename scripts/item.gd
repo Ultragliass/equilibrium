@@ -22,7 +22,7 @@ func build_shape():
 
 
 func _get_drag_data(_at_position):
-	Global.set_drag_item(self)
+	Global.drag_item = self
 
 	var drag_preview = duplicate()
 	drag_preview.init(shape)

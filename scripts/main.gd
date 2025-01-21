@@ -20,14 +20,26 @@ func _ready():
 func scatter_item(item: Control):
 	var screen_size = get_viewport_rect().size
 	var scatter_position = Vector2()
+	var margin = SCATTER_ITEMS_SCREEN_MARGIN
 
 	while true:
 		var edge = randi() % 4
+		var item_width = item.shape[0].size() * Global.cell_size.width
+		var item_height = item.shape.size() * Global.cell_size.height
+		
 		match edge:
-			0: scatter_position = Vector2(randf_range(0, screen_size.x - item.size.x), SCATTER_ITEMS_SCREEN_MARGIN)
-			1: scatter_position = Vector2(randf_range(0, screen_size.x - item.size.x), screen_size.y - item.size.y - SCATTER_ITEMS_SCREEN_MARGIN)
-			2: scatter_position = Vector2(SCATTER_ITEMS_SCREEN_MARGIN, randf_range(0, screen_size.y - item.size.y))
-			3: scatter_position = Vector2(screen_size.x - item.size.x - SCATTER_ITEMS_SCREEN_MARGIN, randf_range(0, screen_size.y - item.size.y))
+			Global.SCATTER_POSITIONS.TOP: scatter_position = Vector2(
+				randf_range(margin, screen_size.x - item_width - margin),
+				margin)
+			Global.SCATTER_POSITIONS.BOTTOM: scatter_position = Vector2(
+				randf_range(margin, screen_size.x - item_width - margin),
+				screen_size.y - item_height - margin)
+			Global.SCATTER_POSITIONS.LEFT: scatter_position = Vector2(
+				margin,
+				randf_range(margin, screen_size.y - item_height - margin))
+			Global.SCATTER_POSITIONS.RIGHT: scatter_position = Vector2(
+				screen_size.x - item_width - margin,
+				randf_range(margin, screen_size.y - item_height - margin))
 
 		var is_overlapping = false
 		for scattered_item_position in scattered_item_positions:
