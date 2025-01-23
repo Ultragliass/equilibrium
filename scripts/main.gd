@@ -23,8 +23,10 @@ func scatter_multiple_items():
 # Creates a new item with random shape
 func create_random_item() -> Control:
 	var item = ITEM_SCENE.instantiate()
-	var shape = Global.ITEMS["iron"][randi() % Global.ITEMS["iron"].size()]
-	item.init(shape)
+	var categories = Global.ITEMS.keys()
+	var category = categories[randi() % categories.size()]
+	var shape = Global.ITEMS[category][randi() % Global.ITEMS[category].size()]
+	item.init(shape, category)
 	return item
 
 # Calculate item position based on edge

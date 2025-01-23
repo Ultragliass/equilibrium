@@ -1,9 +1,18 @@
 extends Control
 
 var shape: Array = []
+var category: String
 
-func init(item_shape: Array):
+const ITEM_COLORS = {
+    "iron": Color(0.4, 0.4, 0.4),
+    "stone": Color(0.8, 0.8, 0.8),
+    "earth": Color(0.45, 0.32, 0.17),
+    "water": Color(0.2, 0.4, 0.8)
+}
+
+func init(item_shape: Array, item_category: String):
 	shape = item_shape
+	category = item_category
 	print("Initializing item with shape: ", shape)
 	_build_shape()
 
@@ -29,7 +38,7 @@ func _create_blocks():
 # Helper function to create a single block
 func _create_block(row: int, col: int) -> ColorRect:
 	var block = ColorRect.new()
-	block.color = Color(0.8, 0.8, 0.8)
+	block.color = ITEM_COLORS[category]
 	block.custom_minimum_size = Vector2(Global.cell_size.width, Global.cell_size.height)
 	block.position = Vector2(col, row) * Vector2(Global.cell_size.width, Global.cell_size.height)
 	block.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -57,7 +66,7 @@ func _setup_drag_state():
 # Helper function to create drag preview
 func _create_drag_preview() -> DragPreviewControl:
 	var drag_preview = duplicate()
-	drag_preview.init(shape)
+	drag_preview.init(shape, category)
 	drag_preview.modulate.a = 0.5
 	
 	var preview_control = DragPreviewControl.new()

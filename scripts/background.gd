@@ -6,15 +6,14 @@ func _can_drop_data(_pos, _data):
 func _drop_data(_pos, data):
     # Apply rotation to the shape based on Global.current_rotation
     var rotated_shape = _get_rotated_shape(data.shape)
-    print("Rotated shape: ", rotated_shape)  
+    print("Rotated shape: ", rotated_shape)
     
     # Update the data with rotated shape
-    data.shape = rotated_shape
-    data.init(rotated_shape)
+    data.init(rotated_shape, data.category)
     
     # Calculate target position for the dropped item
     var target_pos = _calculate_target_position(rotated_shape)
-    print("Target position: ", target_pos)  
+    print("Target position: ", target_pos)
     
     # Handle reparenting if needed
     _handle_reparenting(data)
@@ -37,7 +36,7 @@ func _calculate_target_position(shape):
 # Helper function to handle reparenting
 func _handle_reparenting(data):
     if data.get_parent().name != "Main":
-        print("Reparenting item from grid")  # Debug print
+        print("Reparenting item from grid") # Debug print
         var grid_manager = $"/root/Main/WeekdayGridManager"
         grid_manager.remove_item_from_grid(data)
         data.reparent(get_parent())

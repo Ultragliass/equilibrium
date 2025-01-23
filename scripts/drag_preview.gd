@@ -34,7 +34,7 @@ func _handle_rotation() -> void:
     var rotated_shape = _get_rotated_shape()
     
     # Update preview with new shape
-    drag_preview.init(rotated_shape)
+    drag_preview.init(rotated_shape, drag_preview.category)
     _update_preview_position(rotated_shape)
 
 # Returns the shape after applying current rotation

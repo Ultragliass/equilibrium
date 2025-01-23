@@ -22,7 +22,7 @@ func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2):
 	print("Grid Initialized: Rows=", rows, ", Columns=", columns, ", Cell Size=", cell_size)
 	_initialize_empty_grid()
 
-# Helper function to initialize an empty grid
+# Helper function to initialize an empty grid 
 func _initialize_empty_grid() -> void:
 	grid.resize(rows)
 	for i in range(rows):
@@ -110,7 +110,7 @@ func _drop_data(_pos, data):
 		
 	var grid_coords = get_grid_coordinates(get_global_mouse_position())
 	data.shape = _get_rotated_shape(data.shape)
-	data.init(data.shape)
+	data.init(data.shape, data.category)
 	
 	remove_item_from_grid(data)
 	remove_drop_preview()
@@ -165,6 +165,7 @@ func _create_drop_preview() -> void:
 	drop_preview = Global.drag_item.duplicate()
 	drop_preview.modulate = Color(1, 1, 1, 0.5)
 	drop_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	drop_preview.category = Global.drag_item.category
 	
 	# Reset all control properties
 	drop_preview.position = Vector2.ZERO
@@ -182,7 +183,7 @@ func _create_drop_preview() -> void:
 # Helper function to update preview transform
 func _update_preview_transform(coords: Vector2, shape: Array) -> void:
 	drop_preview.shape = shape
-	drop_preview.init(shape)
+	drop_preview.init(shape, drop_preview.category)
 	drop_preview.position = coords * cell_size
 	last_preview_pos = coords
 	last_preview_rotation = Global.current_rotation
