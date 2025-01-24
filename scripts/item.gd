@@ -13,7 +13,6 @@ const ITEM_COLORS = {
 func init(item_shape: Array, item_category: String):
 	shape = item_shape
 	category = item_category
-	print("Initializing item with shape: ", shape)
 	_build_shape()
 
 func _build_shape():
@@ -24,7 +23,6 @@ func _build_shape():
 func _clear_existing_blocks():
 	for child in get_children():
 		child.queue_free()
-	print("Cleared existing blocks")
 
 # Helper function to create new blocks
 func _create_blocks():
@@ -33,7 +31,6 @@ func _create_blocks():
 			if shape[row][col] == 1:
 				var block = _create_block(row, col)
 				add_child(block)
-	print("Created new blocks for shape")
 
 # Helper function to create a single block
 func _create_block(row: int, col: int) -> ColorRect:
@@ -54,7 +51,6 @@ func _get_drag_data(_at_position):
 	set_drag_preview(preview_control)
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	
-	print("Started dragging item")
 	return self
 
 # Helper function to set up drag state
