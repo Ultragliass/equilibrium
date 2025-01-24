@@ -14,6 +14,7 @@ var original_positions: Array = []
 
 # Initialize the grid with given dimensions
 func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2):
+	dragging_item = null # Ensure dragging_item is reset during initialization
 	rows = grid_rows
 	columns = grid_columns
 	cell_size = grid_cell_size
@@ -32,7 +33,7 @@ func _initialize_empty_grid() -> void:
 			grid[i][j] = null
 	print("Empty grid initialized.")
 
-# Helper function to get rotated shape
+# Helper function to rotate shapes based on current rotation
 func _get_rotated_shape(original_shape: Array) -> Array:
 	var result = original_shape
 	for i in range(Global.current_rotation):
@@ -43,6 +44,7 @@ func _get_rotated_shape(original_shape: Array) -> Array:
 func _is_within_bounds(cell_x: int, cell_y: int) -> bool:
 	return cell_x >= 0 and cell_y >= 0 and cell_x < columns and cell_y < rows
 
+# Check if an item can be placed at a given grid position
 func can_place_item_at(grid_x: int, grid_y: int, item: Node) -> bool:
 	var shape = item.shape
 	for row in range(shape.size()):
@@ -63,6 +65,7 @@ func can_place_item_at(grid_x: int, grid_y: int, item: Node) -> bool:
 
 	return true
 
+# Place an item on the grid
 func place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 	if not can_place_item_at(grid_x, grid_y, item):
 		print("Failed to place item at", grid_x, ",", grid_y)
@@ -79,39 +82,80 @@ func place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 
 	return {"isPlaced": true, "grid_x": grid_x, "grid_y": grid_y}
 
+# Remove an item from the grid
 func remove_item_from_grid(item: Node) -> void:
-	# First pass - just remove item
 	for row in range(rows):
 		for col in range(columns):
 			if grid[row][col] == item:
 				grid[row][col] = null
-				print("Removing item from", col, ",", row)
+				print("Removed item from", col, ",", row)
 
+# Update positions of items that should fall
 func update_falling_items() -> void:
 	var something_fell = true
-
-	# Keep checking until nothing falls anymore
 	while something_fell:
 		something_fell = false
-		# Process from bottom up
 		for row in range(rows - 1, -1, -1):
 			for col in range(columns):
 				var item = grid[row][col]
 				if item != null and item.category == "iron":
-					# Process each item only once by checking leftmost position
 					var item_start_x = _find_item_start_x(item, row, col)
 					if col == item_start_x:
-						# Check if item can fall
 						var did_fall = _make_item_fall(item, item_start_x, row)
 						something_fell = something_fell or did_fall
 
-# Helper function to find the leftmost position of an item in a row
+# Update positions of items that should float
+func update_floating_items() -> void:
+	var something_floated = true
+	while something_floated:
+		something_floated = false
+		var processed_items = []
+		for row in range(rows):
+			for col in range(columns):
+				var item = grid[row][col]
+				if item != null and item.category == "water" and not item in processed_items:
+					processed_items.append(item)
+					var item_start_x = _find_item_start_x(item, row, col)
+					if col == item_start_x:
+						var did_float = _make_item_float(item, item_start_x, row)
+						something_floated = something_floated or did_float
+
+# Make an item float upwards
+func _make_item_float(item: Node, start_x: int, start_y: int) -> bool:
+	if start_y == 0:
+		return false
+	
+	var final_y = start_y
+	while final_y > 0:
+		var next_y = final_y - 1
+		var blocked = false
+		for col in range(item.shape[0].size()):
+			for row in range(item.shape.size()):
+				if item.shape[row][col] == 1:
+					var check_y = next_y + row
+					var check_x = start_x + col
+					if check_y < 0 or check_x >= columns or (grid[check_y][check_x] != null and grid[check_y][check_x] != item):
+						blocked = true
+						break
+			if blocked:
+				break
+		if blocked:
+			break
+		final_y = next_y
+	
+	if final_y != start_y:
+		_remove_item_from_old_position(item, start_x, start_y)
+		_place_item_in_new_position(item, start_x, final_y)
+		return true
+	return false
+
+# Helper to find leftmost position of an item
 func _find_item_start_x(item: Node, row: int, col: int) -> int:
 	while col > 0 and grid[row][col - 1] == item:
 		col -= 1
 	return col
 
-# Helper function to remove an item from its old position
+# Remove item from old position
 func _remove_item_from_old_position(item: Node, start_x: int, start_y: int) -> void:
 	for row in range(item.shape.size()):
 		for col in range(item.shape[0].size()):
@@ -167,8 +211,9 @@ func _drop_data(_pos, data):
 
 	if placement_data.isPlaced:
 		data.position = grid_coords * cell_size
-		# Check for falls
+		# Check for both falls and floats
 		update_falling_items()
+		update_floating_items()
 
 	dragging_item = null
 	Global.is_dragging = false
@@ -262,20 +307,20 @@ func update_drop_preview():
 		show_drop_preview(grid_coords, rotated_shape)
 
 func can_move_down(item: Node, current_x: int, current_y: int) -> bool:
-	# Check if any part of the item would be out of bounds
+	# Ensure item does not go out of bounds
 	if current_y + item.shape.size() >= rows:
 		return false
 
-	# Check all cells in item's shape for collisions
+	# Check for collisions in item's shape
 	for col in range(item.shape[0].size()):
 		for row in range(item.shape.size()):
 			if item.shape[row][col] == 1:
 				var check_y = current_y + row + 1
 				var check_x = current_x + col
-				
+
 				if check_y >= rows:
 					return false
-					
+
 				if grid[check_y][check_x] != null and grid[check_y][check_x] != item:
 					return false
 
@@ -284,46 +329,44 @@ func can_move_down(item: Node, current_x: int, current_y: int) -> bool:
 # Helper function to make an item fall to its lowest possible position
 func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 	var final_y = start_y
-	
-	# Track iron items with full shape info
 	var iron_items = []
+
+	# Gather all iron items with full shape data
 	for row in range(rows):
 		for col in range(columns):
 			var cell_item = grid[row][col]
 			if cell_item != null and cell_item != item and cell_item.category == "iron":
 				if not cell_item in iron_items:
-					# Store full shape info
 					iron_items.append({
 						"item": cell_item,
 						"start_x": _find_item_start_x(cell_item, row, col),
 						"y": row,
 						"shape": cell_item.shape
 					})
-	
+
 	while final_y < rows - item.shape.size():
 		var next_y = final_y + 1
 		var blocked = false
 		var items_at_level = []
-		
-		# Check ALL rows of falling item's shape
+
+		# Validate all rows in item's shape
 		for shape_row in range(item.shape.size()):
 			for shape_col in range(item.shape[0].size()):
 				if item.shape[shape_row][shape_col] == 1:
 					var check_x = start_x + shape_col
 					var check_y = next_y + shape_row
-					
+
 					if check_y >= rows:
 						blocked = true
 						break
-					
-					# Check if under any iron item
+
+					# Check collision with iron items
 					var under_iron = false
 					for iron_data in iron_items:
 						var iron_item = iron_data.item
 						var iron_x = iron_data.start_x
 						var iron_y = iron_data.y
-						
-						# Check full iron item shape
+
 						if iron_y < check_y:
 							var relative_x = check_x - iron_x
 							if relative_x >= 0 and relative_x < iron_item.shape[0].size():
@@ -331,8 +374,8 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 									if iron_item.shape[iron_row][relative_x] == 1:
 										under_iron = true
 										break
-					
-					# Check cell contents
+
+					# Check grid collision
 					var cell_item = grid[check_y][check_x]
 					if cell_item != null and cell_item != item:
 						if cell_item.category == "iron":
@@ -340,46 +383,46 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 							break
 						elif not under_iron and not items_at_level.has(cell_item):
 							items_at_level.append(cell_item)
-			
+
 			if blocked:
 				break
-		
+
 		if blocked:
 			break
-		
-		# Pop items and continue
+
+		# Remove items at the current level
 		for pop_item in items_at_level:
 			_pop_item_to_background(pop_item)
+
 		final_y = next_y
-	
+
 	if final_y != start_y:
 		_remove_item_from_old_position(item, start_x, start_y)
 		_place_item_in_new_position(item, start_x, final_y)
 		return true
-	
+
 	return false
 
 func _check_fall_collision(item: Node, check_x: int, check_y: int) -> Array:
 	var collided_items = []
-	var collision_y = -1 # Track the y-level where collision occurs
-	
-	# First pass - find collision y-level
+	var collision_y = -1
+
+	# Locate collision point
 	for col in range(item.shape[0].size()):
 		for row in range(item.shape.size()):
 			if item.shape[row][col] == 1:
 				var grid_y = check_y + row
 				var grid_x = check_x + col
-				
+
 				if grid_y < rows and grid_x < columns:
 					var cell_item = grid[grid_y][grid_x]
 					if cell_item != null and cell_item != item:
-						# Found first collision point
 						collision_y = grid_y
 						break
 		if collision_y != -1:
 			break
-	
-	# Second pass - only collect items at collision y-level
+
+	# Collect items at collision level
 	if collision_y != -1:
 		for col in range(item.shape[0].size()):
 			var grid_x = check_x + col
@@ -388,76 +431,66 @@ func _check_fall_collision(item: Node, check_x: int, check_y: int) -> Array:
 				if cell_item != null and cell_item != item:
 					if cell_item.category != "iron" and not collided_items.has(cell_item):
 						collided_items.append(cell_item)
-	
+
 	return collided_items
 
 func _handle_fall_collisions(collided_items: Array) -> void:
 	var main_scene = get_node("/root/Main")
-	
+
 	for item in collided_items:
-		# Remove from grid
+		# Remove from grid and reparent
 		remove_item_from_grid(item)
-		
-		# Reparent to main scene
 		if item.get_parent() == self:
 			item.reparent(main_scene)
-			
-		# Use main scene's scatter function
 		main_scene.scatter_item(item)
 
 func _calculate_final_position(item: Node, start_x: int, start_y: int) -> int:
 	var test_y = start_y
-	
+
 	while test_y < rows - item.shape.size():
 		var next_y = test_y + 1
-		var can_move = true
-		
-		# Check if entire shape can move down
+
 		for col in range(item.shape[0].size()):
 			for row in range(item.shape.size()):
 				if item.shape[row][col] == 1:
 					var check_y = next_y + row
 					var check_x = start_x + col
-					
-					# Stop if out of bounds
+
 					if check_y >= rows:
 						return test_y
-						
-					# Stop if hitting iron
+
 					var cell_item = grid[check_y][check_x]
 					if cell_item != null and cell_item != item:
 						if cell_item.category == "iron":
 							return test_y
-		
-		# If we can move, update position
-		test_y = next_y
-	
+
+			test_y = next_y
+
 	return test_y
 
 func _find_items_to_pop(item: Node, start_x: int, start_y: int, final_y: int) -> Array:
 	var items_to_pop = []
-	
-	# Check each cell between start and final position
+
 	for check_y in range(start_y + 1, final_y + 1):
 		for col in range(item.shape[0].size()):
 			for row in range(item.shape.size()):
 				if item.shape[row][col] == 1:
 					var grid_y = check_y + row
 					var grid_x = start_x + col
-					
+
 					if grid_y < rows and grid_x < columns:
 						var cell_item = grid[grid_y][grid_x]
 						if cell_item != null and cell_item != item and cell_item.category != "iron":
 							if not items_to_pop.has(cell_item):
 								items_to_pop.append(cell_item)
-	
+
 	return items_to_pop
 
 func _pop_item_to_background(item: Node) -> void:
 	var main_scene = get_node("/root/Main")
 	remove_item_from_grid(item)
-	
+
 	if item.get_parent() == self:
 		item.reparent(main_scene)
-	
+
 	main_scene.scatter_item(item)

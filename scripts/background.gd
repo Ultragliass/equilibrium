@@ -18,6 +18,7 @@ func _drop_data(_pos, data):
         var grid_manager = data.get_parent()
         grid_manager.remove_item_from_grid(data)
         grid_manager.update_falling_items()
+        grid_manager.update_floating_items()
         data.reparent(get_parent())
     
     # Set final position and reset rotation
