@@ -16,7 +16,11 @@ func _drop_data(_pos, data):
     print("Target position: ", target_pos)
     
     # Handle reparenting if needed
-    _handle_reparenting(data)
+    if data.get_parent().name == "WeekdayGridManager":
+        var grid_manager = data.get_parent()
+        grid_manager.remove_item_from_grid(data)
+        grid_manager.update_falling_items()
+        data.reparent(get_parent())
     
     # Set final position and reset rotation
     data.position = target_pos

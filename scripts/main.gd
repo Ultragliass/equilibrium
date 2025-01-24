@@ -1,6 +1,6 @@
 extends Control
 
-const NUMBER_OF_ITEMS_TO_SCATTER = 5
+const NUMBER_OF_ITEMS_TO_SCATTER = 10
 const SCATTER_ITEMS_SCREEN_MARGIN = 10
 const ITEM_SCENE = preload("res://scenes/Item.tscn")
 
