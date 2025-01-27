@@ -41,5 +41,5 @@ func _handle_rotation() -> void:
 func _get_rotated_shape() -> Array:
     var rotated_shape = original_shape
     for i in range(Global.current_rotation):
-        rotated_shape = Global.rotate_shape(rotated_shape)
+        rotated_shape = Global._rotate_shape(rotated_shape)
     return rotated_shape

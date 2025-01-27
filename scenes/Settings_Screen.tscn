@@ -1,0 +1,97 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgcmobpudxnw"]
+
+[ext_resource type="Script" path="res://scripts/settings_screen.gd" id="1_7jknd"]
+
+[node name="SettingsScreen" type="Panel"]
+z_index = 2
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("1_7jknd")
+
+[node name="SettingsBackground" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(600, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.244776, 0.244776, 0.244776, 1)
+
+[node name="SettingsTitle" type="Label" parent="SettingsBackground"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -37.0
+offset_right = 37.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 30
+text = "SETTINGS"
+
+[node name="SettingsButton" type="Button" parent="SettingsBackground"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -18.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "X"
+
+[node name="SFXVolumeBox" type="HBoxContainer" parent="SettingsBackground"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -61.5
+offset_bottom = -38.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="SFXVolumeLabel" type="Label" parent="SettingsBackground/SFXVolumeBox"]
+layout_mode = 2
+text = "SFX      Volume"
+
+[node name="SFXVolumeSlider" type="HSlider" parent="SettingsBackground/SFXVolumeBox"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = -80.0
+max_value = 0.0
+
+[node name="MusicVolumeBox" type="HBoxContainer" parent="SettingsBackground"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="MusicVolumeLabel" type="Label" parent="SettingsBackground/MusicVolumeBox"]
+layout_mode = 2
+text = "Music  Volume"
+
+[node name="MusicVolumeSlider" type="HSlider" parent="SettingsBackground/MusicVolumeBox"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = -80.0
+max_value = 0.0

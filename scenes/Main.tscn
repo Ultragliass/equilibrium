@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://bh0yq7fqggbpj"]
+[gd_scene load_steps=8 format=3 uid="uid://bh0yq7fqggbpj"]
 
 [ext_resource type="Texture2D" uid="uid://dd2onagvfsr0w" path="res://assets/background.jpg" id="1_iadfh"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_rx278"]
 [ext_resource type="Script" path="res://scripts/background.gd" id="3_tx0a1"]
 [ext_resource type="Script" path="res://scripts/grid_manager.gd" id="4_fhpea"]
+[ext_resource type="AudioStream" uid="uid://cac5w8aff12le" path="res://assets/sounds/background.ogg" id="5_gj6b6"]
+[ext_resource type="PackedScene" uid="uid://cdm4lrfyte6fk" path="res://scenes/Title_Screen.tscn" id="6_ch7q2"]
+[ext_resource type="Script" path="res://scripts/title_screen.gd" id="7_g44fg"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -25,6 +28,17 @@ grow_vertical = 2
 texture = ExtResource("1_iadfh")
 script = ExtResource("3_tx0a1")
 
+[node name="SettingsButton" type="Button" parent="."]
+z_index = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -8.0
+offset_bottom = 8.0
+grow_horizontal = 0
+text = "Settings"
+
 [node name="WeekdayGridManager" type="Control" parent="."]
 anchors_preset = 0
 offset_left = 1182.0
@@ -32,3 +46,18 @@ offset_top = 407.0
 offset_right = 1724.0
 offset_bottom = 944.0
 script = ExtResource("4_fhpea")
+
+[node name="BackgroundMusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_gj6b6")
+bus = &"Music"
+
+[node name="TitleScreen" parent="." instance=ExtResource("6_ch7q2")]
+z_index = 2
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 0
+script = ExtResource("7_g44fg")

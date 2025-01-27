@@ -1,16 +1,16 @@
 extends Control
 
 var shape: Array = []
-var category: String
+var category: Global.ITEM_TYPES
 
 const ITEM_COLORS = {
-    "iron": Color(0.4, 0.4, 0.4),
-    "stone": Color(0.8, 0.8, 0.8),
-    "earth": Color(0.45, 0.32, 0.17),
-    "water": Color(0.2, 0.4, 0.8)
+    Global.ITEM_TYPES.IRON: Color(0.4, 0.4, 0.4),
+    Global.ITEM_TYPES.STONE: Color(0.8, 0.8, 0.8),
+    Global.ITEM_TYPES.EARTH: Color(0.45, 0.32, 0.17),
+    Global.ITEM_TYPES.WATER: Color(0.2, 0.4, 0.8)
 }
 
-func init(item_shape: Array, item_category: String):
+func init(item_shape: Array, item_category: Global.ITEM_TYPES):
 	shape = item_shape
 	category = item_category
 	_build_shape()

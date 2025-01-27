@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdm4lrfyte6fk"]
+
+[ext_resource type="Texture2D" uid="uid://bmxjwtcduxgg" path="res://assets/title_screen.png" id="1_xxr3b"]
+
+[node name="TitleScreen" type="TextureRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_xxr3b")
+
+[node name="StartGameButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1267.0
+offset_top = 483.0
+offset_right = 1509.0
+offset_bottom = 616.0
+text = "START GAME"
+
+[node name="SettingsButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1267.0
+offset_top = 683.0
+offset_right = 1509.0
+offset_bottom = 816.0
+text = "SETTINGS"
