@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/settings_screen.gd" id="1_7jknd"]
 
 [node name="SettingsScreen" type="Panel"]
+top_level = true
 z_index = 2
 custom_minimum_size = Vector2(1920, 1080)
 offset_right = 1920.0
@@ -69,8 +70,10 @@ text = "SFX      Volume"
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-min_value = -80.0
-max_value = 0.0
+min_value = 0.001
+max_value = 1.0
+step = 0.05
+value = 0.8
 
 [node name="MusicVolumeBox" type="HBoxContainer" parent="SettingsBackground"]
 layout_mode = 1
@@ -93,5 +96,7 @@ text = "Music  Volume"
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_vertical = 4
-min_value = -80.0
-max_value = 0.0
+min_value = 0.001
+max_value = 1.0
+step = 0.05
+value = 0.8

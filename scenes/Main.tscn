@@ -29,6 +29,7 @@ texture = ExtResource("1_iadfh")
 script = ExtResource("3_tx0a1")
 
 [node name="SettingsButton" type="Button" parent="."]
+top_level = true
 z_index = 1
 layout_mode = 1
 anchors_preset = 1
@@ -37,6 +38,7 @@ anchor_right = 1.0
 offset_left = -8.0
 offset_bottom = 8.0
 grow_horizontal = 0
+mouse_force_pass_scroll_events = false
 text = "Settings"
 
 [node name="WeekdayGridManager" type="Control" parent="."]
@@ -52,6 +54,7 @@ stream = ExtResource("5_gj6b6")
 bus = &"Music"
 
 [node name="TitleScreen" parent="." instance=ExtResource("6_ch7q2")]
+top_level = true
 z_index = 2
 layout_mode = 0
 anchors_preset = 0
