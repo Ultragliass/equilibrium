@@ -13,6 +13,7 @@ config_version=5
 config/name="Equilibrium"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
+run/max_fps=24
 config/icon="res://icon.svg"
 
 [audio]

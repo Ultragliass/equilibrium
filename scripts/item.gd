@@ -14,47 +14,58 @@ func init(item_shape: Array, item_images: Dictionary, item_category: Global.ITEM
 	images = item_images
 	_setup_image()
 
+# Helper function to create the item image
 func _setup_image() -> void:
 	for child in get_children():
 		child.queue_free()
 		
-	var image_texture = TextureRect.new()
-	image_texture.expand = true
-	image_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-
-	# Handle rotation-specific texture and flags
-	match current_rotation:
-		0:
-			image_texture.texture = images.h
-			image_texture.flip_h = false
-			image_texture.flip_v = false
-		1:
-			image_texture.texture = images.v
-			image_texture.flip_h = false
-			image_texture.flip_v = false
-		2:
-			image_texture.texture = images.h
-			image_texture.flip_h = true
-			image_texture.flip_v = true
-		3:
-			image_texture.texture = images.v
-			image_texture.flip_h = true
-			image_texture.flip_v = true
-	
-	var item_width = shape[0].size() * Global.cell_size.width
-	var item_height = shape.size() * Global.cell_size.height
-	
-	custom_minimum_size = Vector2(item_width, item_height)
-	size = Vector2(item_width, item_height)
-	pivot_offset = size / 2
-	
-	image_texture.custom_minimum_size = size
-	image_texture.size = size
-	image_texture.pivot_offset = size / 2
-	
+	var image_texture = _create_image_texture()
+	_apply_rotation_transforms(image_texture)
+	_setup_size_and_pivot(image_texture)
 	add_child(image_texture)
 
-func _get_drag_data(_at_position) -> Control:
+# Helper function to initialize the texture
+func _create_image_texture() -> TextureRect:
+	var texture = TextureRect.new()
+	texture.expand = true
+	texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	return texture
+
+# Helper function to setup the texture rotation
+func _apply_rotation_transforms(texture: TextureRect) -> void:
+	match current_rotation:
+		0:
+			texture.texture = images.h
+			texture.flip_h = false
+			texture.flip_v = false
+		1:
+			texture.texture = images.v
+			texture.flip_h = false
+			texture.flip_v = false
+		2:
+			texture.texture = images.h
+			texture.flip_h = true
+			texture.flip_v = true
+		3:
+			texture.texture = images.v
+			texture.flip_h = true
+			texture.flip_v = true
+
+# Helper function to setup the texture size and offset
+func _setup_size_and_pivot(texture: TextureRect) -> void:
+	var item_width = shape[0].size() * Global.cell_size.width
+	var item_height = shape.size() * Global.cell_size.height
+	var item_size = Vector2(item_width, item_height)
+	
+	custom_minimum_size = item_size
+	size = item_size
+	pivot_offset = size / 2
+	
+	texture.custom_minimum_size = size
+	texture.size = size
+	texture.pivot_offset = size / 2
+
+func _get_drag_data(_at_position: Vector2) -> Control:
 	Global.is_dragging = true
 
 	var preview_control = _create_drag_preview()

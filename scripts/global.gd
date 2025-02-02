@@ -1,39 +1,35 @@
 extends Node
 
-# Item SFX types
 enum SFXs {
-	IRON_PLACE,
-	IRON_DROP,
-	WATER_PLACE,
-	WATER_FLOAT,
-	STONE_PLACE,
-	EARTH_PLACE,
+    IRON_PLACE,
+    IRON_DROP,
+    WATER_PLACE,
+    WATER_FLOAT,
+    STONE_PLACE,
+    EARTH_PLACE,
 }
 
-# Item scatter options
 enum SCATTER_POSITIONS {
-	TOP,
-	BOTTOM,
-	LEFT,
-	RIGHT
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT
 }
 
-# Item animation types
 enum ANIMATIONS {
-	SCALE,
+    SCALE,
 	ROTATE,
-	SCATTER
+    SCATTER
 }
 
-# Item type declarations
 enum ITEM_TYPES {
-	IRON,
-	STONE,
-	EARTH,
-	WATER
+    IRON,
+    STONE,
+    EARTH,
+    WATER
 }
 
-const SFX = {
+const SFX: Dictionary = {
 	SFXs.IRON_PLACE: preload("res://assets/sounds/sfx/iron_place.ogg"),
 	SFXs.IRON_DROP: preload("res://assets/sounds/sfx/iron_drop.ogg"),
 	SFXs.WATER_PLACE: preload("res://assets/sounds/sfx/water_place.ogg"),
@@ -42,8 +38,7 @@ const SFX = {
 	SFXs.EARTH_PLACE: preload("res://assets/sounds/sfx/earth_place.ogg"),
 }
 
-# Item shapes configuration
-const ITEMS = {
+const ITEMS: Dictionary = {
     ITEM_TYPES.IRON: [
         {"shape": [[1]], "images": {
 			"h": preload("res://assets/objects/iron-H.jpg"),
@@ -130,30 +125,25 @@ const ITEMS = {
     ]
 }
 
-const WEEKDAY_GRID_SLOTS = {"rows": 5, "columns": 4}
+const WEEKDAY_GRID_SLOTS: Dictionary = {"rows": 5, "columns": 4}
 
+var is_dragging = false
 var drag_preview: Node
-
-# Grid cell size - calculated on initialization
 var cell_size = {
 	"width": 0,
 	"height": 0
 }
 
-# Global variable to track dragging state
-var is_dragging = false
-
 @onready var background_music_player = get_node("/root/Main/BackgroundMusicPlayer")
 
-func _ready():
+func _ready() -> void:
 	_initialize_cell_size()
-	print(background_music_player)
 	background_music_player.play()
 	prints("Cell size initialized:", cell_size)
 
-# Cell size initialization
+# Helper function to initialize the cell sizes
 func _initialize_cell_size() -> void:
-	var weekday_grid_manager = get_node("/root/Main/WeekdayGridManager")
+	var weekday_grid_manager: Control = get_node("/root/Main/WeekdayGridManager")
 	cell_size.width = weekday_grid_manager.size.x / WEEKDAY_GRID_SLOTS.columns
 	cell_size.height = weekday_grid_manager.size.y / WEEKDAY_GRID_SLOTS.rows
 
@@ -166,6 +156,7 @@ func _create_empty_shape(rows: int, cols: int) -> Array:
 			new_shape[i].append(0)
 	return new_shape
 
+# Helper function to play SFX
 func _play_sfx(type: SFXs) -> void:
 	var player = AudioStreamPlayer.new()
 	player.bus = "SFX"

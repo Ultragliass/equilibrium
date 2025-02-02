@@ -1,19 +1,20 @@
 extends Control
 
-var drop_preview: Node = null
-var last_preview_pos: Vector2 = Vector2.ZERO
-var last_preview_rotation: int = 0
-
 var grid = []
 var cell_size = Vector2(100, 100)
 var rows: int
 var columns: int
 
+var drop_preview: Node = null
+var last_preview_pos: Vector2 = Vector2.ZERO
+var last_preview_rotation: int = 0
 var dragging_item: Node = null
 
-# Initialize the grid with given dimensions
-func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2):
-	dragging_item = null # Ensure dragging_item is reset during initialization
+func _ready() -> void:
+	set_process_input(true)
+
+func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2) -> void:
+	dragging_item = null
 	rows = grid_rows
 	columns = grid_columns
 	cell_size = grid_cell_size
@@ -22,28 +23,21 @@ func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2):
 	print("Grid Initialized: Rows=", rows, ", Columns=", columns, ", Cell Size=", cell_size)
 	_initialize_empty_grid()
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("rotate") and Global.is_dragging and drop_preview:
+		_update_drop_preview()
+
 # Helper function to initialize an empty grid 
 func _initialize_empty_grid() -> void:
 	grid.resize(rows)
+
 	for i in range(rows):
 		grid[i] = []
 		grid[i].resize(columns)
 		for j in range(columns):
 			grid[i][j] = null
-	print("Empty grid initialized.")
 
-func _ready():
-	set_process_input(true)
-
-func _input(event: InputEvent):
-	if event.is_action_pressed("rotate") and Global.is_dragging and drop_preview:
-		_update_drop_preview()
-
-# Handle dropping of an item
-func _drop_data(_pos, data):
-	if not (data is Control):
-		return
-
+func _drop_data(_pos: Vector2, data: Variant) -> void:
 	data.init(Global.drag_preview.shape, data.images, data.category)
 	data.current_rotation = Global.drag_preview.current_rotation
 
@@ -52,7 +46,6 @@ func _drop_data(_pos, data):
 
 	var grid_coords = _get_grid_coordinates(get_global_mouse_position())
 
-	# Reparent if needed
 	if data.get_parent() != self:
 		data.reparent(self)
 
@@ -73,19 +66,13 @@ func _drop_data(_pos, data):
 
 		await get_tree().create_timer(0.1).timeout
 
-		# Check for both falls and floats
 		_update_falling_items()
 		_update_floating_items()
 
 	dragging_item = null
 	Global.is_dragging = false
 
-
-# Check if dragging item can be dropped
-func _can_drop_data(_pos, data):
-	if not (data is Control):
-		return false
-
+func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	var grid_coords = _get_grid_coordinates(get_global_mouse_position())
 	dragging_item = data
 
@@ -103,7 +90,7 @@ func _can_drop_data(_pos, data):
 	return false
 
 # Initialize and show drop preview
-func _show_drop_preview(grid_coords: Vector2, shape: Array):
+func _show_drop_preview(grid_coords: Vector2, shape: Array) -> void:
 	if not drop_preview:
 		_create_drop_preview()
 
@@ -161,13 +148,13 @@ func _update_floating_items() -> void:
 	if did_item_float:
 		Global._play_sfx(Global.SFXs.WATER_FLOAT)
 
-
-func _update_drop_preview():
+# Helper function to update drop preview
+func _update_drop_preview() -> void:
 	if drop_preview and Global.drag_preview:
 		var grid_coords = _get_grid_coordinates(get_global_mouse_position())
 		_show_drop_preview(grid_coords, Global.drag_preview.shape)
 
-# Place an item on the grid
+# Helper function to place an item on the grid
 func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 	if not _can_place_item_at(grid_x, grid_y, item):
 		print("Failed to place item at", grid_x, ",", grid_y)
@@ -175,7 +162,6 @@ func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 
 	_remove_item_from_grid(item)
 
-	# Place in new positions
 	for row in range(item.shape.size()):
 		for col in range(item.shape[row].size()):
 			if item.shape[row][col] == 1:
@@ -184,8 +170,8 @@ func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 
 	return {"is_placed": true, "grid_x": grid_x, "grid_y": grid_y}
 
-# Check if an item can be placed at a given grid position
-func _can_place_item_at(grid_x: int, grid_y: int, item: Node) -> bool:
+# Helper function to check if an item can be placed at a given grid position
+func _can_place_item_at(grid_x: int, grid_y: int, item: Control) -> bool:
 	var shape = item.shape
 	for row in range(shape.size()):
 		for col in range(shape[row].size()):
@@ -193,19 +179,17 @@ func _can_place_item_at(grid_x: int, grid_y: int, item: Node) -> bool:
 				var cell_x = grid_x + col
 				var cell_y = grid_y + row
 
-				# Check grid bounds
 				if not _is_within_bounds(cell_x, cell_y):
 					print("Cannot place item - out of bounds at", cell_x, ",", cell_y)
 					return false
 
-				# Allow overlap with dragging item
 				if grid[cell_y][cell_x] != null and grid[cell_y][cell_x] != dragging_item:
 					print("Cannot place item - space occupied at", cell_x, ",", cell_y)
 					return false
 
 	return true
 
-# Remove an item from the grid
+# Helper function to remove an item from the grid
 func _remove_item_from_grid(item: Node) -> void:
 	for row in range(rows):
 		for col in range(columns):
@@ -218,7 +202,6 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 	var final_y = start_y
 	var iron_items = []
 
-	# Gather all iron items with full shape data
 	for row in range(rows):
 		for col in range(columns):
 			var cell_item = grid[row][col]
@@ -236,7 +219,6 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 		var blocked = false
 		var items_at_level = []
 
-		# Validate all rows in item's shape
 		for shape_row in range(item.shape.size()):
 			for shape_col in range(item.shape[0].size()):
 				if item.shape[shape_row][shape_col] == 1:
@@ -247,7 +229,6 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 						blocked = true
 						break
 
-					# Check collision with iron items
 					var under_iron = false
 					for iron_data in iron_items:
 						var iron_item = iron_data.item
@@ -262,7 +243,6 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 										under_iron = true
 										break
 
-					# Check grid collision
 					var cell_item = grid[check_y][check_x]
 					if cell_item != null and cell_item != item:
 						if cell_item.category == Global.ITEM_TYPES.IRON:
@@ -277,7 +257,6 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 		if blocked:
 			break
 
-		# Remove items at the current level
 		for pop_item in items_at_level:
 			_pop_item_to_background(pop_item)
 
@@ -365,7 +344,6 @@ func _get_grid_coordinates(world_position: Vector2) -> Vector2:
 		grid_x = maxi(0, mini(grid_x, columns - 1))
 		grid_y = maxi(0, mini(grid_y, rows - 1))
 
-	print("Grid coordinates calculated:", Vector2(grid_x, grid_y))
 	return Vector2(grid_x, grid_y)
 
 # Helper function to check if a cell is within bounds
@@ -383,10 +361,11 @@ func _update_preview_transform(coords: Vector2, shape: Array) -> void:
 	drop_preview.current_rotation = Global.drag_preview.current_rotation
 	drop_preview.init(Global.drag_preview.shape, drop_preview.images, drop_preview.category)
 	drop_preview.position = coords * cell_size
+
 	last_preview_pos = coords
 	last_preview_rotation = Global.drag_preview.current_rotation
 
-# Helper function to create drop preview
+# Helper function to create drop preview in the grid
 func _create_drop_preview() -> void:
 	drop_preview = Global.drag_preview.duplicate()
 	drop_preview.modulate.a = 0.5
@@ -403,10 +382,12 @@ func _create_drop_preview() -> void:
 
 	add_child(drop_preview)
 
+# Helper function to remove drop preview from the grid
 func _remove_drop_preview():
 	if drop_preview:
 		drop_preview.queue_free()
 		drop_preview = null
+
 		last_preview_pos = Vector2.ZERO
 		last_preview_rotation = 0
 

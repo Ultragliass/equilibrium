@@ -1,20 +1,21 @@
 extends TextureRect
 
-func _can_drop_data(_pos, _data):
+func _can_drop_data(_pos: Vector2, _data: Variant) -> bool:
     return true
 
-func _drop_data(_pos, data):
-
+func _drop_data(_pos: Vector2, data: Variant) -> void:
     data.init(Global.drag_preview.shape, data.images, data.category)
     data.current_rotation = Global.drag_preview.current_rotation
     
     var target_pos = _calculate_target_position(Global.drag_preview.shape)
-
     _handle_reparenting(data)
-    
     create_tween().tween_property(data, "position", target_pos, 0.1)
 
-    match data.category:
+    _play_placement_sfx(data.category)
+
+# Helper function to play the correct SFX when placing an item
+func _play_placement_sfx(category: Global.ITEM_TYPES) -> void:
+    match category:
         Global.ITEM_TYPES.IRON:
             Global._play_sfx(Global.SFXs.IRON_PLACE)
         Global.ITEM_TYPES.STONE:
@@ -25,15 +26,15 @@ func _drop_data(_pos, data):
             Global._play_sfx(Global.SFXs.WATER_PLACE)
 
 # Helper function to calculate target position
-func _calculate_target_position(shape):
+func _calculate_target_position(shape: Array) -> Vector2:
     var width: float = shape[0].size() * Global.cell_size.width / 2
     var height: float = shape.size() * Global.cell_size.height / 2
     return get_global_mouse_position() - Vector2(width, height)
 
-# Helper function to handle reparenting
-func _handle_reparenting(data: Control):
+# Helper function to handle reparenting of items to the main play area
+func _handle_reparenting(data: Control) -> void:
     if data.get_parent().name != "Main":
-        var grid_manager = data.get_parent()
+        var grid_manager: Control = data.get_parent()
         grid_manager._remove_item_from_grid(data)
         grid_manager._update_falling_items()
         grid_manager._update_floating_items()
