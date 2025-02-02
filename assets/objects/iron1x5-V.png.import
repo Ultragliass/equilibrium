@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bic3y1tfnflq0"
-path="res://.godot/imported/iron-V.jpg-7ac7b215bc9da3a129dccaac35edb069.ctex"
+uid="uid://cydkccligwsy1"
+path="res://.godot/imported/iron1x5-V.png-57270b0b8daa37a82e8e49c63b0b5b31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/iron-V.jpg"
-dest_files=["res://.godot/imported/iron-V.jpg-7ac7b215bc9da3a129dccaac35edb069.ctex"]
+source_file="res://assets/objects/iron1x5-V.png"
+dest_files=["res://.godot/imported/iron1x5-V.png-57270b0b8daa37a82e8e49c63b0b5b31.ctex"]
 
 [params]
 

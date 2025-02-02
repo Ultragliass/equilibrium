@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bv563fd7v1dqp"
-path="res://.godot/imported/stone-V.jpg-1bb00e51f85a8e7e5dcb7346a41546e7.ctex"
+uid="uid://dje7jqig4a8ig"
+path="res://.godot/imported/iron1x1-V.png-0bae3c9d7ad2422aedc1560caede5955.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/stone-V.jpg"
-dest_files=["res://.godot/imported/stone-V.jpg-1bb00e51f85a8e7e5dcb7346a41546e7.ctex"]
+source_file="res://assets/objects/iron1x1-V.png"
+dest_files=["res://.godot/imported/iron1x1-V.png-0bae3c9d7ad2422aedc1560caede5955.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b41ep8cb2735y"
-path="res://.godot/imported/stone_L-H.png-eb84a9b8e14732ef7304abe891883eb2.ctex"
+uid="uid://oae0o5wjocui"
+path="res://.godot/imported/iron1x4-H.png-2643ae8bf1f64394633ec4483b94ebd2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/stone_L-H.png"
-dest_files=["res://.godot/imported/stone_L-H.png-eb84a9b8e14732ef7304abe891883eb2.ctex"]
+source_file="res://assets/objects/iron1x4-H.png"
+dest_files=["res://.godot/imported/iron1x4-H.png-2643ae8bf1f64394633ec4483b94ebd2.ctex"]
 
 [params]
 

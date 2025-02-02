@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cghbmr7n4rqap"
-path="res://.godot/imported/water-V.jpg-38bac3381e040c4ede8ede2183b08e42.ctex"
+uid="uid://bywmqfb4rkl7k"
+path="res://.godot/imported/iron1x1-H.png-7754b18f3351f93c47f138ed15f29bcc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/water-V.jpg"
-dest_files=["res://.godot/imported/water-V.jpg-38bac3381e040c4ede8ede2183b08e42.ctex"]
+source_file="res://assets/objects/iron1x1-H.png"
+dest_files=["res://.godot/imported/iron1x1-H.png-7754b18f3351f93c47f138ed15f29bcc.ctex"]
 
 [params]
 

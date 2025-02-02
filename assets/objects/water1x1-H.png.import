@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://duedl6f0k6tjm"
-path="res://.godot/imported/earth-H.jpg-9814fd6fce76b299ce2b753e3e07ae16.ctex"
+uid="uid://d4dcad8ugngdc"
+path="res://.godot/imported/water1x1-H.png-325379009c3a0fa3fec8a9f8b75e80da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/earth-H.jpg"
-dest_files=["res://.godot/imported/earth-H.jpg-9814fd6fce76b299ce2b753e3e07ae16.ctex"]
+source_file="res://assets/objects/water1x1-H.png"
+dest_files=["res://.godot/imported/water1x1-H.png-325379009c3a0fa3fec8a9f8b75e80da.ctex"]
 
 [params]
 

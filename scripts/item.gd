@@ -28,7 +28,7 @@ func _setup_image() -> void:
 func _create_image_texture() -> TextureRect:
 	var texture = TextureRect.new()
 	texture.expand = true
-	texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	texture.stretch_mode = TextureRect.STRETCH_SCALE
 	return texture
 
 # Helper function to setup the texture rotation

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b41ep8cb2735y"
-path="res://.godot/imported/stone_L-H.png-eb84a9b8e14732ef7304abe891883eb2.ctex"
+uid="uid://corui16mhfei2"
+path="res://.godot/imported/water1x1-V.png-21c0d21ff42f8305a78cac586a5da82c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/stone_L-H.png"
-dest_files=["res://.godot/imported/stone_L-H.png-eb84a9b8e14732ef7304abe891883eb2.ctex"]
+source_file="res://assets/objects/water1x1-V.png"
+dest_files=["res://.godot/imported/water1x1-V.png-21c0d21ff42f8305a78cac586a5da82c.ctex"]
 
 [params]
 

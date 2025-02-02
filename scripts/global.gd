@@ -41,32 +41,32 @@ const SFX: Dictionary = {
 const ITEMS: Dictionary = {
     ITEM_TYPES.IRON: [
         {"shape": [[1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron1x1-H.png"),
+			"v": preload("res://assets/objects/iron1x1-V.png")
 		}},
         {"shape": [[1, 1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron1x2-H.png"),
+			"v": preload("res://assets/objects/iron1x2-V.png")
 		}},
         {"shape": [[1, 1], [1, 1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron2x2-H.png"),
+			"v": preload("res://assets/objects/iron2x2-V.png")
 		}},
         {"shape": [[1, 1], [1, 1], [1, 1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron2x3-H.png"),
+			"v": preload("res://assets/objects/iron2x3-V.png")
 		}},
         {"shape": [[1, 1, 1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron1x3-H.png"),
+			"v": preload("res://assets/objects/iron1x3-V.png")
 		}},
         {"shape": [[1, 1, 1, 1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron1x4-H.png"),
+			"v": preload("res://assets/objects/iron1x4-V.png")
 		}},
         {"shape": [[1, 1, 1, 1, 1]], "images": {
-			"h": preload("res://assets/objects/iron-H.jpg"),
-			"v": preload("res://assets/objects/iron-V.jpg")
+			"h": preload("res://assets/objects/iron1x5-H.png"),
+			"v": preload("res://assets/objects/iron1x5-V.png")
 		}},
     ],
     ITEM_TYPES.STONE: [
@@ -79,16 +79,16 @@ const ITEMS: Dictionary = {
 			"v": null
 		}},
         {"shape": [[1, 1], [1, 1]], "images": {
-			"h": preload("res://assets/objects/stone-H.jpg"),
-			"v": preload("res://assets/objects/stone-V.jpg")
+			"h": preload("res://assets/objects/stone2x2-H.png"),
+			"v": preload("res://assets/objects/stone2x2-V.png")
 		}},
         {"shape": [[1]], "images": {
-			"h": preload("res://assets/objects/stone-H.jpg"),
-			"v": preload("res://assets/objects/stone-V.jpg")
+			"h": preload("res://assets/objects/stone1x1-H.png"),
+			"v": preload("res://assets/objects/stone1x1-V.png")
 		}},
         {"shape": [[1], [1], [1]], "images": {
-			"h": preload("res://assets/objects/stone-H.jpg"),
-			"v": preload("res://assets/objects/stone-V.jpg")
+			"h": preload("res://assets/objects/stone1x3-H.png"),
+			"v": preload("res://assets/objects/stone1x3-V.png")
 		}},
         {"shape": [[0, 1], [1, 1]], "images": {
 			"h": preload("res://assets/objects/stone_L-H.png"),
@@ -97,30 +97,31 @@ const ITEMS: Dictionary = {
     ],
     ITEM_TYPES.EARTH: [
         {"shape": [[1, 1], [1, 1]], "images": {
-			"h": preload("res://assets/objects/earth-H.jpg"),
-			"v": preload("res://assets/objects/earth-V.jpg")
+			"h": preload("res://assets/objects/earth2x2-H.png"),
+			"v": preload("res://assets/objects/earth2x2-V.png")
 		}},
         {"shape": [[0, 1], [1, 1]], "images": {
 			"h": preload("res://assets/objects/earth_L-H.png"),
 			"v": preload("res://assets/objects/earth_L-V.png")
 		}},
         {"shape": [[1], [1]], "images": {
-			"h": preload("res://assets/objects/earth-H.jpg"),
-			"v": preload("res://assets/objects/earth-V.jpg")
+			"h": preload("res://assets/objects/earth1x2-H.png"),
+			"v": preload("res://assets/objects/earth1x2-V.png")
+
 		}},
         {"shape": [[1]], "images": {
-			"h": preload("res://assets/objects/earth-H.jpg"),
-			"v": preload("res://assets/objects/earth-V.jpg")
+			"h": preload("res://assets/objects/earth1x1-H.png"),
+			"v": preload("res://assets/objects/earth1x1-V.png")
 		}},
     ],
     ITEM_TYPES.WATER: [
         {"shape": [[1, 1]], "images": {
-			"h": preload("res://assets/objects/water-H.jpg"),
-			"v": preload("res://assets/objects/water-V.jpg")
+			"h": preload("res://assets/objects/water1x2-H.png"),
+			"v": preload("res://assets/objects/water1x2-V.png")
 		}},
         {"shape": [[1]], "images": {
-			"h": preload("res://assets/objects/water-H.jpg"),
-			"v": preload("res://assets/objects/water-V.jpg")
+			"h": preload("res://assets/objects/water1x1-H.png"),
+			"v": preload("res://assets/objects/water1x1-V.png")
 		}},
     ]
 }

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlmdsacd4key1"
-path="res://.godot/imported/stone-H.jpg-3d6c7d859c6eeb160cef48a7cc1cf87c.ctex"
+uid="uid://8rnxcc50306"
+path="res://.godot/imported/earth1x1-V.png-b28d4910255dc4a508a41ce0220fc340.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/objects/stone-H.jpg"
-dest_files=["res://.godot/imported/stone-H.jpg-3d6c7d859c6eeb160cef48a7cc1cf87c.ctex"]
+source_file="res://assets/objects/earth1x1-V.png"
+dest_files=["res://.godot/imported/earth1x1-V.png-b28d4910255dc4a508a41ce0220fc340.ctex"]
 
 [params]
 
