@@ -4,18 +4,14 @@ func _can_drop_data(_pos, _data):
     return true
 
 func _drop_data(_pos, data):
-    # Apply rotation to the shape based on Global.current_rotation
-    var rotated_shape = _get_rotated_shape(data.shape)
+
+    data.init(Global.drag_preview.shape, data.images, data.category)
+    data.current_rotation = Global.drag_preview.current_rotation
     
-    # Update the data with rotated shape
-    data.init(rotated_shape, data.category)
-    
-    # Calculate target position for the dropped item
-    var target_pos = _calculate_target_position(rotated_shape)
+    var target_pos = _calculate_target_position(Global.drag_preview.shape)
 
     _handle_reparenting(data)
     
-    # Set final position and reset rotation
     create_tween().tween_property(data, "position", target_pos, 0.1)
 
     match data.category:
@@ -28,18 +24,11 @@ func _drop_data(_pos, data):
         Global.ITEM_TYPES.WATER:
             Global._play_sfx(Global.SFXs.WATER_PLACE)
 
-    Global.current_rotation = 0
-
-# Helper function to handle shape rotation
-func _get_rotated_shape(original_shape):
-    var shape = original_shape
-    for i in range(Global.current_rotation):
-        shape = Global._rotate_shape(shape)
-    return shape
-
 # Helper function to calculate target position
 func _calculate_target_position(shape):
-    return get_global_mouse_position() - Functions._calculate_drag_item_size(shape)
+    var width: float = shape[0].size() * Global.cell_size.width / 2
+    var height: float = shape.size() * Global.cell_size.height / 2
+    return get_global_mouse_position() - Vector2(width, height)
 
 # Helper function to handle reparenting
 func _handle_reparenting(data: Control):

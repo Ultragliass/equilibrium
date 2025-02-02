@@ -29,8 +29,8 @@ func _create_random_item() -> Control:
 	var item = item_scene.instantiate()
 	var categories = Global.ITEMS.keys()
 	var category = categories[randi() % categories.size()]
-	var shape = Global.ITEMS[category][randi() % Global.ITEMS[category].size()]
-	item.init(shape, category)
+	var item_data = Global.ITEMS[category][randi() % Global.ITEMS[category].size()]
+	item.init(item_data.shape, item_data.images, category)
 	return item
 
 # Calculate item position based on edge

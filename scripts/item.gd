@@ -2,71 +2,84 @@ extends Control
 
 var shape: Array = []
 var category: Global.ITEM_TYPES
+var images: Dictionary
+var current_rotation: int:
+	set(value):
+		current_rotation = value % 4
+		_setup_image()
 
-const ITEM_COLORS = {
-    Global.ITEM_TYPES.IRON: Color(0.4, 0.4, 0.4),
-    Global.ITEM_TYPES.STONE: Color(0.8, 0.8, 0.8),
-    Global.ITEM_TYPES.EARTH: Color(0.45, 0.32, 0.17),
-    Global.ITEM_TYPES.WATER: Color(0.2, 0.4, 0.8)
-}
-
-func init(item_shape: Array, item_category: Global.ITEM_TYPES):
+func init(item_shape: Array, item_images: Dictionary, item_category: Global.ITEM_TYPES) -> void:
 	shape = item_shape
 	category = item_category
-	_build_shape()
+	images = item_images
+	_setup_image()
 
-func _build_shape():
-	_clear_existing_blocks()
-	_create_blocks()
-
-# Helper function to clear existing blocks
-func _clear_existing_blocks():
+func _setup_image() -> void:
 	for child in get_children():
 		child.queue_free()
+		
+	var image_texture = TextureRect.new()
+	image_texture.expand = true
+	image_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 
-# Helper function to create new blocks
-func _create_blocks():
-	for row in range(shape.size()):
-		for col in range(shape[row].size()):
-			if shape[row][col] == 1:
-				var block = _create_block(row, col)
-				add_child(block)
-
-# Helper function to create a single block
-func _create_block(row: int, col: int) -> ColorRect:
-	var block = ColorRect.new()
-	block.color = ITEM_COLORS[category]
-	block.custom_minimum_size = Vector2(Global.cell_size.width, Global.cell_size.height)
-	block.position = Vector2(col, row) * Vector2(Global.cell_size.width, Global.cell_size.height)
-	block.mouse_filter = Control.MOUSE_FILTER_PASS
-	return block
-
-func _get_drag_data(_at_position):
-	# Set up global drag state
-	_setup_drag_state()
+	# Handle rotation-specific texture and flags
+	match current_rotation:
+		0:
+			image_texture.texture = images.h
+			image_texture.flip_h = false
+			image_texture.flip_v = false
+		1:
+			image_texture.texture = images.v
+			image_texture.flip_h = false
+			image_texture.flip_v = false
+		2:
+			image_texture.texture = images.h
+			image_texture.flip_h = true
+			image_texture.flip_v = true
+		3:
+			image_texture.texture = images.v
+			image_texture.flip_h = true
+			image_texture.flip_v = true
 	
-	# Create and setup preview
+	var item_width = shape[0].size() * Global.cell_size.width
+	var item_height = shape.size() * Global.cell_size.height
+	
+	custom_minimum_size = Vector2(item_width, item_height)
+	size = Vector2(item_width, item_height)
+	pivot_offset = size / 2
+	
+	image_texture.custom_minimum_size = size
+	image_texture.size = size
+	image_texture.pivot_offset = size / 2
+	
+	add_child(image_texture)
+
+func _get_drag_data(_at_position) -> Control:
+	Global.is_dragging = true
+
 	var preview_control = _create_drag_preview()
-	
+
 	set_drag_preview(preview_control)
+
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	
-	return self
+	shape = shape.duplicate(true)
 
-# Helper function to set up drag state
-func _setup_drag_state():
-	Global.drag_item = self
-	Global.is_dragging = true
-	Global.current_rotation = 0
+	return self
 
 # Helper function to create drag preview
 func _create_drag_preview() -> DragPreviewControl:
 	var drag_preview = duplicate()
-	drag_preview.init(shape, category)
+	drag_preview.init(shape, images, category)
+	drag_preview.current_rotation = current_rotation
 	drag_preview.modulate.a = 0.5
 	
 	var preview_control = DragPreviewControl.new()
-	preview_control.setup(drag_preview, shape)
+	preview_control.setup(drag_preview)
 	preview_control.connect("tree_exiting", func(): Global.is_dragging = false)
+
+	print("Creating drag preview with shape: ", shape)
+
+	Global.drag_preview = drag_preview
 	
 	return preview_control

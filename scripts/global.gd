@@ -1,7 +1,5 @@
 extends Node
 
-signal dragging_item(item)
-
 # Item SFX types
 enum SFXs {
 	IRON_PLACE,
@@ -46,52 +44,101 @@ const SFX = {
 
 # Item shapes configuration
 const ITEMS = {
-	ITEM_TYPES.IRON: [
-		[[1]],
-		[[1, 1]],
-		[[1, 1], [1, 1]],
-		[[1, 1], [1, 1], [1, 1]],
-		[[1, 1, 1]],
-		[[1, 1, 1, 1]],
-		[[1, 1, 1, 1, 1]]
-	],
-	ITEM_TYPES.STONE: [
-		[[0, 1, 0], [1, 1, 1]],
-		[[1, 0], [1, 1], [0, 1]],
-		[[1, 1], [1, 1]],
-		[[1]],
-		[[1], [1], [1]],
-		[[0, 1], [1, 1]]
-	],
-	ITEM_TYPES.EARTH: [
-		[[1, 1], [1, 1]],
-		[[0, 1], [1, 1]],
-		[[1], [1]],
-		[[1]],
-	],
-	ITEM_TYPES.WATER: [
-		[[1, 1]],
-		[[1]],
-	]
+    ITEM_TYPES.IRON: [
+        {"shape": [[1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+        {"shape": [[1, 1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+        {"shape": [[1, 1], [1, 1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+        {"shape": [[1, 1], [1, 1], [1, 1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+        {"shape": [[1, 1, 1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+        {"shape": [[1, 1, 1, 1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+        {"shape": [[1, 1, 1, 1, 1]], "images": {
+			"h": preload("res://assets/objects/iron-H.jpg"),
+			"v": preload("res://assets/objects/iron-V.jpg")
+		}},
+    ],
+    ITEM_TYPES.STONE: [
+        {"shape": [[0, 1, 0], [1, 1, 1]], "images": {
+			"h": preload("res://assets/objects/stone_T-H.png"),
+			"v": preload("res://assets/objects/stone_T-V.png")
+		}},
+        {"shape": [[1, 0], [1, 1], [0, 1]], "images": {
+			"h": null,
+			"v": null
+		}},
+        {"shape": [[1, 1], [1, 1]], "images": {
+			"h": preload("res://assets/objects/stone-H.jpg"),
+			"v": preload("res://assets/objects/stone-V.jpg")
+		}},
+        {"shape": [[1]], "images": {
+			"h": preload("res://assets/objects/stone-H.jpg"),
+			"v": preload("res://assets/objects/stone-V.jpg")
+		}},
+        {"shape": [[1], [1], [1]], "images": {
+			"h": preload("res://assets/objects/stone-H.jpg"),
+			"v": preload("res://assets/objects/stone-V.jpg")
+		}},
+        {"shape": [[0, 1], [1, 1]], "images": {
+			"h": preload("res://assets/objects/stone_L-H.png"),
+			"v": preload("res://assets/objects/stone_L-V.png")
+		}},
+    ],
+    ITEM_TYPES.EARTH: [
+        {"shape": [[1, 1], [1, 1]], "images": {
+			"h": preload("res://assets/objects/earth-H.jpg"),
+			"v": preload("res://assets/objects/earth-V.jpg")
+		}},
+        {"shape": [[0, 1], [1, 1]], "images": {
+			"h": preload("res://assets/objects/earth_L-H.png"),
+			"v": preload("res://assets/objects/earth_L-V.png")
+		}},
+        {"shape": [[1], [1]], "images": {
+			"h": preload("res://assets/objects/earth-H.jpg"),
+			"v": preload("res://assets/objects/earth-V.jpg")
+		}},
+        {"shape": [[1]], "images": {
+			"h": preload("res://assets/objects/earth-H.jpg"),
+			"v": preload("res://assets/objects/earth-V.jpg")
+		}},
+    ],
+    ITEM_TYPES.WATER: [
+        {"shape": [[1, 1]], "images": {
+			"h": preload("res://assets/objects/water-H.jpg"),
+			"v": preload("res://assets/objects/water-V.jpg")
+		}},
+        {"shape": [[1]], "images": {
+			"h": preload("res://assets/objects/water-H.jpg"),
+			"v": preload("res://assets/objects/water-V.jpg")
+		}},
+    ]
 }
 
 const WEEKDAY_GRID_SLOTS = {"rows": 5, "columns": 4}
 
-var drag_item: Node:
-# Setter for drag_item that emits a signal
-	set(item):
-		drag_item = item
-		emit_signal("dragging_item", item)
-		prints("Dragging item:", str(item.name) if item else "None")
+var drag_preview: Node
 
 # Grid cell size - calculated on initialization
 var cell_size = {
 	"width": 0,
 	"height": 0
 }
-
-# Tracker for item rotation
-var current_rotation = 0
 
 # Global variable to track dragging state
 var is_dragging = false
@@ -109,23 +156,6 @@ func _initialize_cell_size() -> void:
 	var weekday_grid_manager = get_node("/root/Main/WeekdayGridManager")
 	cell_size.width = weekday_grid_manager.size.x / WEEKDAY_GRID_SLOTS.columns
 	cell_size.height = weekday_grid_manager.size.y / WEEKDAY_GRID_SLOTS.rows
-
-
-# Rotates shape array 90 degrees clockwise
-func _rotate_shape(shape: Array) -> Array:
-	var rows = shape.size()
-	var cols = shape[0].size()
-	
-	# Create empty rotated shape array
-	var new_shape = _create_empty_shape(cols, rows)
-	
-	# Perform rotation
-	for i in range(rows):
-		for j in range(cols):
-			new_shape[j][rows - 1 - i] = shape[i][j]
-	
-	prints("Shape rotated:", new_shape)
-	return new_shape
 
 # Helper function to create empty shape array
 func _create_empty_shape(rows: int, cols: int) -> Array:

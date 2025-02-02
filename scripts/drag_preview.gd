@@ -8,38 +8,45 @@ func _ready():
     set_process_input(true)
     prints("DragPreviewControl initialized")
 
-func setup(preview: Control, shape: Array):
+func setup(preview: Control):
     drag_preview = preview
-    original_shape = shape
+    original_shape = preview.shape.duplicate(true)
     add_child(preview)
-    _update_preview_position(shape)
-    prints("Preview setup completed with shape:", shape)
+    _update_preview_position()
+    prints("Preview setup completed with shape:", preview.shape)
 
 func _input(event: InputEvent):
     if event.is_action_pressed("rotate"):
-        _handle_rotation()
+        var new_rotation = (drag_preview.current_rotation + 1) % 4
+        var rotated_shape = _get_rotated_shape(new_rotation)
+        drag_preview.current_rotation = new_rotation
+        drag_preview.init(rotated_shape, drag_preview.images, drag_preview.category)
+        _update_preview_position()
 
 # Updates the preview position based on the given shape
-func _update_preview_position(shape: Array) -> void:
-    drag_preview.position = -Functions._calculate_drag_item_size(shape)
-    prints("Preview position updated:", drag_preview.position)
-
-# Handles the rotation logic when rotation input is received
-func _handle_rotation() -> void:
-    # Update rotation counter
-    Global.current_rotation = (Global.current_rotation + 1) % 4
-    prints("Current rotation:", Global.current_rotation)
-    
-    # Get rotated shape
-    var rotated_shape = _get_rotated_shape()
-    
-    # Update preview with new shape
-    drag_preview.init(rotated_shape, drag_preview.category)
-    _update_preview_position(rotated_shape)
+func _update_preview_position():
+    if drag_preview:
+        drag_preview.position = -drag_preview.size / 2
 
 # Returns the shape after applying current rotation
-func _get_rotated_shape() -> Array:
-    var rotated_shape = original_shape
-    for i in range(Global.current_rotation):
-        rotated_shape = Global._rotate_shape(rotated_shape)
-    return rotated_shape
+func _get_rotated_shape(_rotation: int = -1) -> Array:
+    original_shape = _rotate_shape_once(original_shape)
+
+    return original_shape
+
+func _rotate_shape_once(shape: Array) -> Array:
+    var rows = shape.size()
+    var cols = shape[0].size()
+    
+    var rotated = []
+    for i in range(cols):
+        var row = []
+        for _j in range(rows):
+            row.append(0)
+        rotated.append(row)
+    
+    for i in range(rows):
+        for j in range(cols):
+            rotated[j][rows - 1 - i] = shape[i][j]
+    
+    return rotated

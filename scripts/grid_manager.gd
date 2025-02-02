@@ -10,7 +10,6 @@ var rows: int
 var columns: int
 
 var dragging_item: Node = null
-var original_positions: Array = []
 
 # Initialize the grid with given dimensions
 func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2):
@@ -45,12 +44,13 @@ func _drop_data(_pos, data):
 	if not (data is Control):
 		return
 
-	var grid_coords = _get_grid_coordinates(get_global_mouse_position())
-	data.shape = _get_rotated_shape(data.shape)
-	data.init(data.shape, data.category)
+	data.init(Global.drag_preview.shape, data.images, data.category)
+	data.current_rotation = Global.drag_preview.current_rotation
 
 	_remove_item_from_grid(data)
 	_remove_drop_preview()
+
+	var grid_coords = _get_grid_coordinates(get_global_mouse_position())
 
 	# Reparent if needed
 	if data.get_parent() != self:
@@ -79,7 +79,7 @@ func _drop_data(_pos, data):
 
 	dragging_item = null
 	Global.is_dragging = false
-	Global.current_rotation = 0
+
 
 # Check if dragging item can be dropped
 func _can_drop_data(_pos, data):
@@ -90,13 +90,13 @@ func _can_drop_data(_pos, data):
 	dragging_item = data
 
 	var temp_item = data.duplicate()
-	temp_item.shape = _get_rotated_shape(data.shape)
+	temp_item.shape = Global.drag_preview.shape
 
 	var can_place = _can_place_item_at(grid_coords.x, grid_coords.y, temp_item)
 	temp_item.queue_free()
 
 	if can_place:
-		_show_drop_preview(grid_coords, temp_item.shape)
+		_show_drop_preview(grid_coords, Global.drag_preview.shape)
 		return true
 
 	_remove_drop_preview()
@@ -112,8 +112,8 @@ func _show_drop_preview(grid_coords: Vector2, shape: Array):
 		clamp(grid_coords.y, 0, rows - 1)
 	)
 
-	if last_preview_pos != safe_coords or last_preview_rotation != Global.current_rotation:
-		_update_preview_transform(safe_coords, shape)
+	if last_preview_pos != safe_coords or last_preview_rotation != Global.drag_preview.current_rotation:
+		_update_preview_transform(safe_coords, Global.drag_preview.shape)
 
 # Update positions of items that should fall
 func _update_falling_items() -> void:
@@ -163,20 +163,9 @@ func _update_floating_items() -> void:
 
 
 func _update_drop_preview():
-	if drop_preview and Global.drag_item:
+	if drop_preview and Global.drag_preview:
 		var grid_coords = _get_grid_coordinates(get_global_mouse_position())
-		var rotated_shape = _get_rotated_shape(Global.drag_item.shape)
-		_show_drop_preview(grid_coords, rotated_shape)
-
-func _handle_fall_collisions(collided_items: Array) -> void:
-	var main_scene = get_node("/root/Main")
-
-	for item in collided_items:
-		# Remove from grid and reparent
-		_remove_item_from_grid(item)
-		if item.get_parent() == self:
-			item.reparent(main_scene)
-		main_scene._scatter_item(item, Global.ANIMATIONS.SCATTER)
+		_show_drop_preview(grid_coords, Global.drag_preview.shape)
 
 # Place an item on the grid
 func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
@@ -347,99 +336,6 @@ func _place_item_in_new_position(item: Node, start_x: int, fall_y: int) -> void:
 	create_tween().tween_property(item, "position", Vector2(start_x, fall_y) * cell_size, 0.1)
 
 
-func _calculate_final_position(item: Node, start_x: int, start_y: int) -> int:
-	var test_y = start_y
-
-	while test_y < rows - item.shape.size():
-		var next_y = test_y + 1
-
-		for col in range(item.shape[0].size()):
-			for row in range(item.shape.size()):
-				if item.shape[row][col] == 1:
-					var check_y = next_y + row
-					var check_x = start_x + col
-
-					if check_y >= rows:
-						return test_y
-
-					var cell_item = grid[check_y][check_x]
-					if cell_item != null and cell_item != item:
-						if cell_item.category == Global.ITEM_TYPES.IRON:
-							return test_y
-
-			test_y = next_y
-
-	return test_y
-
-func _can_move_down(item: Node, current_x: int, current_y: int) -> bool:
-	# Ensure item does not go out of bounds
-	if current_y + item.shape.size() >= rows:
-		return false
-
-	# Check for collisions in item's shape
-	for col in range(item.shape[0].size()):
-		for row in range(item.shape.size()):
-			if item.shape[row][col] == 1:
-				var check_y = current_y + row + 1
-				var check_x = current_x + col
-
-				if check_y >= rows:
-					return false
-
-				if grid[check_y][check_x] != null and grid[check_y][check_x] != item:
-					return false
-
-	return true
-
-func _check_fall_collision(item: Node, check_x: int, check_y: int) -> Array:
-	var collided_items = []
-	var collision_y = -1
-
-	# Locate collision point
-	for col in range(item.shape[0].size()):
-		for row in range(item.shape.size()):
-			if item.shape[row][col] == 1:
-				var grid_y = check_y + row
-				var grid_x = check_x + col
-
-				if grid_y < rows and grid_x < columns:
-					var cell_item = grid[grid_y][grid_x]
-					if cell_item != null and cell_item != item:
-						collision_y = grid_y
-						break
-		if collision_y != -1:
-			break
-
-	# Collect items at collision level
-	if collision_y != -1:
-		for col in range(item.shape[0].size()):
-			var grid_x = check_x + col
-			if grid_x < columns:
-				var cell_item = grid[collision_y][grid_x]
-				if cell_item != null and cell_item != item:
-					if cell_item.category != Global.ITEM_TYPES.IRON and not collided_items.has(cell_item):
-						collided_items.append(cell_item)
-
-	return collided_items
-
-func _find_items_to_pop(item: Node, start_x: int, start_y: int, final_y: int) -> Array:
-	var items_to_pop = []
-
-	for check_y in range(start_y + 1, final_y + 1):
-		for col in range(item.shape[0].size()):
-			for row in range(item.shape.size()):
-				if item.shape[row][col] == 1:
-					var grid_y = check_y + row
-					var grid_x = start_x + col
-
-					if grid_y < rows and grid_x < columns:
-						var cell_item = grid[grid_y][grid_x]
-						if cell_item != null and cell_item != item and cell_item.category != Global.ITEM_TYPES.IRON:
-							if not items_to_pop.has(cell_item):
-								items_to_pop.append(cell_item)
-
-	return items_to_pop
-
 func _pop_item_to_background(item: Node) -> void:
 	var main_scene = get_node("/root/Main")
 	_remove_item_from_grid(item)
@@ -456,7 +352,7 @@ func _get_grid_coordinates(world_position: Vector2) -> Vector2:
 	var grid_y = maxi(0, floor(local_position.y / cell_size.y))
 
 	if dragging_item:
-		var rotated_shape = _get_rotated_shape(dragging_item.shape)
+		var rotated_shape = Global.drag_preview.shape
 		var shape_width = rotated_shape[0].size()
 		var shape_height = rotated_shape.size()
 
@@ -482,38 +378,28 @@ func _find_item_start_x(item: Node, row: int, col: int) -> int:
 		col -= 1
 	return col
 
-# Helper function to rotate shapes based on current rotation
-func _get_rotated_shape(original_shape: Array) -> Array:
-	var result = original_shape
-	for i in range(Global.current_rotation):
-		result = Global._rotate_shape(result)
-	return result
-
 # Helper function to update preview transform
 func _update_preview_transform(coords: Vector2, shape: Array) -> void:
-	drop_preview.shape = shape
-	drop_preview.init(shape, drop_preview.category)
+	drop_preview.current_rotation = Global.drag_preview.current_rotation
+	drop_preview.init(Global.drag_preview.shape, drop_preview.images, drop_preview.category)
 	drop_preview.position = coords * cell_size
 	last_preview_pos = coords
-	last_preview_rotation = Global.current_rotation
+	last_preview_rotation = Global.drag_preview.current_rotation
 
 # Helper function to create drop preview
 func _create_drop_preview() -> void:
-	drop_preview = Global.drag_item.duplicate()
-	drop_preview.modulate = Color(1, 1, 1, 0.5)
+	drop_preview = Global.drag_preview.duplicate()
+	drop_preview.modulate.a = 0.5
 	drop_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	drop_preview.category = Global.drag_item.category
 
-	# Reset all control properties
+	drop_preview.init(
+        Global.drag_preview.shape.duplicate(true),
+        Global.drag_preview.images,
+        Global.drag_preview.category
+    )
+	
+	drop_preview.current_rotation = Global.drag_preview.current_rotation
 	drop_preview.position = Vector2.ZERO
-	drop_preview.anchor_left = 0
-	drop_preview.anchor_top = 0
-	drop_preview.anchor_right = 0
-	drop_preview.anchor_bottom = 0
-	drop_preview.offset_left = 0
-	drop_preview.offset_top = 0
-	drop_preview.offset_right = 0
-	drop_preview.offset_bottom = 0
 
 	add_child(drop_preview)
 
