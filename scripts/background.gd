@@ -1,4 +1,4 @@
-extends TextureRect
+extends Control
 
 func _can_drop_data(_pos: Vector2, _data: Variant) -> bool:
     return true
@@ -6,6 +6,7 @@ func _can_drop_data(_pos: Vector2, _data: Variant) -> bool:
 func _drop_data(_pos: Vector2, data: Variant) -> void:
     data.init(Global.drag_preview.shape, data.images, data.category)
     data.current_rotation = Global.drag_preview.current_rotation
+    data.z_index = 5
     
     var target_pos = _calculate_target_position(Global.drag_preview.shape)
     _handle_reparenting(data)

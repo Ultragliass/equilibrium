@@ -23,7 +23,6 @@ buses/default_bus_layout="res://main_bus.tres"
 [autoload]
 
 Global="*res://scripts/global.gd"
-Functions="*res://scripts/functions.gd"
 
 [display]
 

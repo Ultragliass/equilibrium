@@ -1,14 +1,5 @@
 extends Node
 
-enum SFXs {
-    IRON_PLACE,
-    IRON_DROP,
-    WATER_PLACE,
-    WATER_FLOAT,
-    STONE_PLACE,
-    EARTH_PLACE,
-}
-
 enum SCATTER_POSITIONS {
     TOP,
     BOTTOM,
@@ -16,7 +7,7 @@ enum SCATTER_POSITIONS {
     RIGHT
 }
 
-enum ANIMATIONS {
+enum TWEENS {
     SCALE,
 	ROTATE,
     SCATTER
@@ -29,6 +20,25 @@ enum ITEM_TYPES {
     WATER
 }
 
+enum SFXs {
+    IRON_PLACE,
+    IRON_DROP,
+    WATER_PLACE,
+    WATER_FLOAT,
+    STONE_PLACE,
+    EARTH_PLACE,
+}
+
+enum ANIMATIONS {
+	DEATH,
+	IDLE,
+	NEW_STAGE,
+	NORMAL_WALK,
+	SAD_WALK,
+	START_NORMAL_WALK,
+	STOP_NORMAL_WALK
+}
+
 const SFX: Dictionary = {
 	SFXs.IRON_PLACE: preload("res://assets/sounds/sfx/iron_place.ogg"),
 	SFXs.IRON_DROP: preload("res://assets/sounds/sfx/iron_drop.ogg"),
@@ -36,6 +46,16 @@ const SFX: Dictionary = {
 	SFXs.WATER_FLOAT: preload("res://assets/sounds/sfx/water_float.ogg"),
 	SFXs.STONE_PLACE: preload("res://assets/sounds/sfx/stone_place.ogg"),
 	SFXs.EARTH_PLACE: preload("res://assets/sounds/sfx/earth_place.ogg"),
+}
+
+const ANIMATION: Dictionary = {
+	ANIMATIONS.DEATH: "death",
+	ANIMATIONS.IDLE: "idle",
+	ANIMATIONS.NEW_STAGE: "new_stage",
+	ANIMATIONS.NORMAL_WALK: "normal_walk",
+	ANIMATIONS.SAD_WALK: "sad_walk",
+	ANIMATIONS.START_NORMAL_WALK: "start_normal_walk",
+	ANIMATIONS.STOP_NORMAL_WALK: "stop_normal_walk",
 }
 
 const ITEMS: Dictionary = {
@@ -127,6 +147,7 @@ const ITEMS: Dictionary = {
 }
 
 const WEEKDAY_GRID_SLOTS: Dictionary = {"rows": 5, "columns": 4}
+const WEEKEND_GRID_SLOTS: Dictionary = {"rows": 5, "columns": 3}
 
 var is_dragging = false
 var drag_preview: Node
@@ -135,18 +156,26 @@ var cell_size = {
 	"height": 0
 }
 
-@onready var background_music_player = get_node("/root/Main/BackgroundMusicPlayer")
+@onready var background_music_player: AudioStreamPlayer = get_node("/root/Main/BackgroundMusicPlayer")
+@onready var player_animations: AnimatedSprite2D = get_node("/root/Main/Background/PlayerAnimations")
+@onready var screen_animations: AnimatedSprite2D = get_node("/root/Main/Background/ScreenAnimations")
 
 func _ready() -> void:
 	_initialize_cell_size()
 	background_music_player.play()
-	prints("Cell size initialized:", cell_size)
 
 # Helper function to initialize the cell sizes
 func _initialize_cell_size() -> void:
 	var weekday_grid_manager: Control = get_node("/root/Main/WeekdayGridManager")
+	var weekend_grid_manager: Control = get_node("/root/Main/WeekendGridManager")
 	cell_size.width = weekday_grid_manager.size.x / WEEKDAY_GRID_SLOTS.columns
 	cell_size.height = weekday_grid_manager.size.y / WEEKDAY_GRID_SLOTS.rows
+
+	prints("Cell size based on weekday grid:", cell_size)
+	print("Cell size based on weekend grid: ", {"width": weekend_grid_manager.size.x / WEEKEND_GRID_SLOTS.columns, "height": weekend_grid_manager.size.y / WEEKEND_GRID_SLOTS.rows})
+
+	if (cell_size.width != weekend_grid_manager.size.x / WEEKEND_GRID_SLOTS.columns or cell_size.height != weekend_grid_manager.size.y / WEEKEND_GRID_SLOTS.rows):
+		print("WARNING: Cell sizes are not equal between weekday and weekend grids!")
 
 # Helper function to create empty shape array
 func _create_empty_shape(rows: int, cols: int) -> Array:
@@ -167,3 +196,9 @@ func _play_sfx(type: SFXs) -> void:
 	add_child(player)
 
 	player.play()
+
+func _play_animations(animations: Array[ANIMATIONS]) -> void:
+	for animation in animations:
+		player_animations.play(ANIMATION[animation])
+		screen_animations.play(ANIMATION[animation])
+		await player_animations.animation_finished

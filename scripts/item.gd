@@ -12,6 +12,7 @@ func init(item_shape: Array, item_images: Dictionary, item_category: Global.ITEM
 	shape = item_shape
 	category = item_category
 	images = item_images
+	z_index = 5
 	_setup_image()
 
 # Helper function to create the item image
@@ -88,6 +89,7 @@ func _create_drag_preview() -> DragPreviewControl:
 	var preview_control = DragPreviewControl.new()
 	preview_control.setup(drag_preview)
 	preview_control.connect("tree_exiting", func(): Global.is_dragging = false)
+	preview_control.z_index = 5
 
 	print("Creating drag preview with shape: ", shape)
 

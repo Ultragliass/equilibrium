@@ -6,6 +6,7 @@ const SCATTER_ITEMS_SCREEN_MARGIN: int = 10
 var scattered_item_positions: Array = []
 
 @onready var weekday_grid_manager: Control = $WeekdayGridManager
+@onready var weekend_grid_manager: Control = $WeekendGridManager
 @onready var settings_button: Button = $SettingsButton
 @onready var settings_screen = preload("res://scenes/Settings_Screen.tscn")
 @onready var item_scene = preload("res://scenes/Item.tscn")
@@ -17,13 +18,20 @@ func _ready() -> void:
 		Vector2(Global.cell_size.width, Global.cell_size.height)
 	)
 
+	weekend_grid_manager.init(
+		Global.WEEKEND_GRID_SLOTS.rows,
+		Global.WEEKEND_GRID_SLOTS.columns,
+		Vector2(Global.cell_size.width, Global.cell_size.height)
+	)
+
 	settings_button.connect("pressed", _on_settings_button_pressed)
 
 # Game initialization to be called when pressing start on the main menu
 func _start_game():
+	Global._play_animations([Global.ANIMATIONS.NEW_STAGE, Global.ANIMATIONS.START_NORMAL_WALK, Global.ANIMATIONS.NORMAL_WALK])
 	for j in range(NUMBER_OF_ITEMS_TO_SCATTER):
 		var item = _create_random_item()
-		_scatter_item(item, Global.ANIMATIONS.SCALE)
+		_scatter_item(item, Global.TWEENS.SCALE)
 		add_child(item)
 
 # Opens the settings screen on settings button press
@@ -67,7 +75,7 @@ func _animate_item_scale(item: Control) -> void:
 	tween.tween_property(item, "scale", Vector2.ONE, 0)
 
 # Helper function for item scattering
-func _scatter_item(item: Control, animation: int = Global.ANIMATIONS.SCALE) -> void:
+func _scatter_item(item: Control, animation: int = Global.TWEENS.SCALE) -> void:
 	var screen_size := get_viewport_rect().size
 	var margin := SCATTER_ITEMS_SCREEN_MARGIN
 	var item_size := Vector2(
@@ -109,11 +117,11 @@ func _is_position_overlapping(item_position: Vector2, item_size: Vector2) -> boo
 # Helper function to apply animation to an item during creation and drop
 func _apply_animation(item: Control, item_position: Vector2, animation: int) -> void:
 	match animation:
-		Global.ANIMATIONS.SCALE:
+		Global.TWEENS.SCALE:
 			prints("Playing scale animation")
 			_animate_item_scale(item)
 			item.position = item_position
-		Global.ANIMATIONS.SCATTER:
+		Global.TWEENS.SCATTER:
 			prints("Playing scatter animation")
 			create_tween().tween_property(item, "position", item_position, 0.1)
 		_:

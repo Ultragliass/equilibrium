@@ -20,7 +20,7 @@ func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2) -> void:
 	cell_size = grid_cell_size
 	mouse_exited.connect(_on_mouse_exited)
 
-	print("Grid Initialized: Rows=", rows, ", Columns=", columns, ", Cell Size=", cell_size)
+	print(self.name, " - Grid Initialized: Rows=", rows, ", Columns=", columns)
 	_initialize_empty_grid()
 
 func _input(event: InputEvent) -> void:
@@ -40,13 +40,19 @@ func _initialize_empty_grid() -> void:
 func _drop_data(_pos: Vector2, data: Variant) -> void:
 	data.init(Global.drag_preview.shape, data.images, data.category)
 	data.current_rotation = Global.drag_preview.current_rotation
+	data.z_index = 1
 
 	_remove_item_from_grid(data)
 	_remove_drop_preview()
 
 	var grid_coords = _get_grid_coordinates(get_global_mouse_position())
 
-	if data.get_parent() != self:
+	var item_parent = data.get_parent()
+
+	if item_parent != self:
+		if item_parent.has_method("_remove_item_from_grid"):
+			item_parent._remove_item_from_grid(data)
+
 		data.reparent(self)
 
 	var placement_data = _place_item_at(grid_coords.x, grid_coords.y, data)
@@ -157,7 +163,7 @@ func _update_drop_preview() -> void:
 # Helper function to place an item on the grid
 func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 	if not _can_place_item_at(grid_x, grid_y, item):
-		print("Failed to place item at", grid_x, ",", grid_y)
+		print(self.name, " - Failed to place item at", grid_x, ",", grid_y)
 		return {"is_placed": false, "grid_coords": 0, "grid_y": 0}
 
 	_remove_item_from_grid(item)
@@ -166,7 +172,7 @@ func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 		for col in range(item.shape[row].size()):
 			if item.shape[row][col] == 1:
 				grid[grid_y + row][grid_x + col] = item
-				print("Successfully placed item at", grid_x + col, ",", grid_y + row)
+				print(self.name, " - Successfully placed item at", grid_x + col, ",", grid_y + row)
 
 	return {"is_placed": true, "grid_x": grid_x, "grid_y": grid_y}
 
@@ -180,11 +186,11 @@ func _can_place_item_at(grid_x: int, grid_y: int, item: Control) -> bool:
 				var cell_y = grid_y + row
 
 				if not _is_within_bounds(cell_x, cell_y):
-					print("Cannot place item - out of bounds at", cell_x, ",", cell_y)
+					print(self.name, " - Cannot place item - out of bounds at", cell_x, ",", cell_y)
 					return false
 
 				if grid[cell_y][cell_x] != null and grid[cell_y][cell_x] != dragging_item:
-					print("Cannot place item - space occupied at", cell_x, ",", cell_y)
+					print(self.name, " - Cannot place item - space occupied at", cell_x, ",", cell_y)
 					return false
 
 	return true
@@ -195,7 +201,7 @@ func _remove_item_from_grid(item: Node) -> void:
 		for col in range(columns):
 			if grid[row][col] == item:
 				grid[row][col] = null
-				print("Removed item from", col, ",", row)
+				print(self.name, " - Removed item from", col, ",", row)
 
 # Helper function to make an item fall to its lowest possible position
 func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
@@ -318,11 +324,12 @@ func _place_item_in_new_position(item: Node, start_x: int, fall_y: int) -> void:
 func _pop_item_to_background(item: Node) -> void:
 	var main_scene = get_node("/root/Main")
 	_remove_item_from_grid(item)
+	item.z_index = 5
 
 	if item.get_parent() == self:
 		item.reparent(main_scene)
 
-	main_scene._scatter_item(item, Global.ANIMATIONS.SCATTER)
+	main_scene._scatter_item(item, Global.TWEENS.SCATTER)
 
 # Calculate grid coordinates from world position
 func _get_grid_coordinates(world_position: Vector2) -> Vector2:
@@ -372,10 +379,10 @@ func _create_drop_preview() -> void:
 	drop_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	drop_preview.init(
-        Global.drag_preview.shape.duplicate(true),
-        Global.drag_preview.images,
-        Global.drag_preview.category
-    )
+		Global.drag_preview.shape.duplicate(true),
+		Global.drag_preview.images,
+		Global.drag_preview.category
+	)
 	
 	drop_preview.current_rotation = Global.drag_preview.current_rotation
 	drop_preview.position = Vector2.ZERO
