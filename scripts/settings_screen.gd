@@ -10,6 +10,7 @@ var music_bus_index: int = AudioServer.get_bus_index("Music")
 func _ready() -> void:
     _initialize_volume_sliders()
     _connect_signals()
+    z_index = 10
 
 func _initialize_volume_sliders() -> void:
     sfx_volume_slider.value = db_to_linear(AudioServer.get_bus_volume_db(sfx_bus_index))

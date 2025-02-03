@@ -18,7 +18,7 @@ func _input(event: InputEvent) -> void:
         var new_rotation: int = (drag_preview.current_rotation + 1) % 4
         var rotated_shape = _get_rotated_shape()
         drag_preview.current_rotation = new_rotation
-        drag_preview.init(rotated_shape, drag_preview.images, drag_preview.category)
+        drag_preview.init(rotated_shape, drag_preview.images, drag_preview.category, drag_preview.score, drag_preview.description, drag_preview.task_data)
         _update_preview_position()
 
 # Helper function to update preview position

@@ -1,12 +1,5 @@
 extends Node
 
-enum SCATTER_POSITIONS {
-    TOP,
-    BOTTOM,
-    LEFT,
-    RIGHT
-}
-
 enum TWEENS {
     SCALE,
 	ROTATE,
@@ -39,6 +32,12 @@ enum ANIMATIONS {
 	STOP_NORMAL_WALK
 }
 
+enum DIFFICULTIES {
+	EASY,
+	MEDIUM,
+	HARD
+}
+
 const SFX: Dictionary = {
 	SFXs.IRON_PLACE: preload("res://assets/sounds/sfx/iron_place.ogg"),
 	SFXs.IRON_DROP: preload("res://assets/sounds/sfx/iron_drop.ogg"),
@@ -60,86 +59,86 @@ const ANIMATION: Dictionary = {
 
 const ITEMS: Dictionary = {
     ITEM_TYPES.IRON: [
-        {"shape": [[1]], "images": {
+        {"shape": [[1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 2, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron1x1-H.png"),
 			"v": preload("res://assets/objects/iron1x1-V.png")
 		}},
-        {"shape": [[1, 1]], "images": {
+        {"shape": [[1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 4, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron1x2-H.png"),
 			"v": preload("res://assets/objects/iron1x2-V.png")
 		}},
-        {"shape": [[1, 1], [1, 1]], "images": {
+        {"shape": [[1, 1], [1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.MEDIUM, "score": {"penalty": 4, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron2x2-H.png"),
 			"v": preload("res://assets/objects/iron2x2-V.png")
 		}},
-        {"shape": [[1, 1], [1, 1], [1, 1]], "images": {
+        {"shape": [[1, 1], [1, 1], [1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.HARD, "score": {"penalty": 6, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron2x3-H.png"),
 			"v": preload("res://assets/objects/iron2x3-V.png")
 		}},
-        {"shape": [[1, 1, 1]], "images": {
+        {"shape": [[1, 1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.MEDIUM, "score": {"penalty": 6, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron1x3-H.png"),
 			"v": preload("res://assets/objects/iron1x3-V.png")
 		}},
-        {"shape": [[1, 1, 1, 1]], "images": {
+        {"shape": [[1, 1, 1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.HARD, "score": {"penalty": 8, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron1x4-H.png"),
 			"v": preload("res://assets/objects/iron1x4-V.png")
 		}},
-        {"shape": [[1, 1, 1, 1, 1]], "images": {
+        {"shape": [[1, 1, 1, 1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.HARD, "score": {"penalty": 10, "bonus": 0}, "images": {
 			"h": preload("res://assets/objects/iron1x5-H.png"),
 			"v": preload("res://assets/objects/iron1x5-V.png")
 		}},
     ],
     ITEM_TYPES.STONE: [
-        {"shape": [[0, 1, 0], [1, 1, 1]], "images": {
+        {"shape": [[0, 1, 0], [1, 1, 1]], "shape_type": "T shape", "difficulty": DIFFICULTIES.MEDIUM, "score": {"penalty": 6, "bonus": 3}, "images": {
 			"h": preload("res://assets/objects/stone_T-H.png"),
 			"v": preload("res://assets/objects/stone_T-V.png")
 		}},
-        {"shape": [[1, 0], [1, 1], [0, 1]], "images": {
-			"h": null,
-			"v": null
+        {"shape": [[1, 0], [1, 1], [0, 1]], "shape_type": "Zigzag", "difficulty": DIFFICULTIES.MEDIUM, "score": {"penalty": 6, "bonus": 3}, "images": {
+			"h": preload("res://assets/objects/stone_Z-H.png"),
+			"v": preload("res://assets/objects/stone_Z-V.png")
 		}},
-        {"shape": [[1, 1], [1, 1]], "images": {
+        {"shape": [[1, 1], [1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 4, "bonus": 2}, "images": {
 			"h": preload("res://assets/objects/stone2x2-H.png"),
 			"v": preload("res://assets/objects/stone2x2-V.png")
 		}},
-        {"shape": [[1]], "images": {
+        {"shape": [[1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 2, "bonus": 1}, "images": {
 			"h": preload("res://assets/objects/stone1x1-H.png"),
 			"v": preload("res://assets/objects/stone1x1-V.png")
 		}},
-        {"shape": [[1], [1], [1]], "images": {
+        {"shape": [[1], [1], [1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 6, "bonus": 3}, "images": {
 			"h": preload("res://assets/objects/stone1x3-H.png"),
 			"v": preload("res://assets/objects/stone1x3-V.png")
 		}},
-        {"shape": [[0, 1], [1, 1]], "images": {
+        {"shape": [[0, 1], [1, 1]], "shape_type": "L shape", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 4, "bonus": 2}, "images": {
 			"h": preload("res://assets/objects/stone_L-H.png"),
 			"v": preload("res://assets/objects/stone_L-V.png")
 		}},
     ],
     ITEM_TYPES.EARTH: [
-        {"shape": [[1, 1], [1, 1]], "images": {
+        {"shape": [[1, 1], [1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 0, "bonus": 2}, "images": {
 			"h": preload("res://assets/objects/earth2x2-H.png"),
 			"v": preload("res://assets/objects/earth2x2-V.png")
 		}},
-        {"shape": [[0, 1], [1, 1]], "images": {
+        {"shape": [[1, 0], [1, 1]], "shape_type": "L shape", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 0, "bonus": 2}, "images": {
 			"h": preload("res://assets/objects/earth_L-H.png"),
 			"v": preload("res://assets/objects/earth_L-V.png")
 		}},
-        {"shape": [[1], [1]], "images": {
-			"h": preload("res://assets/objects/earth1x2-H.png"),
-			"v": preload("res://assets/objects/earth1x2-V.png")
+        {"shape": [[1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 0, "bonus": 2}, "images": {
+			"h": preload("res://assets/objects/earth1x2-V.png"),
+			"v": preload("res://assets/objects/earth1x2-H.png")
 
 		}},
-        {"shape": [[1]], "images": {
+        {"shape": [[1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 0, "bonus": 1}, "images": {
 			"h": preload("res://assets/objects/earth1x1-H.png"),
 			"v": preload("res://assets/objects/earth1x1-V.png")
 		}},
     ],
     ITEM_TYPES.WATER: [
-        {"shape": [[1, 1]], "images": {
+        {"shape": [[1, 1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 0, "bonus": 1}, "images": {
 			"h": preload("res://assets/objects/water1x2-H.png"),
 			"v": preload("res://assets/objects/water1x2-V.png")
 		}},
-        {"shape": [[1]], "images": {
+        {"shape": [[1]], "shape_type": "", "difficulty": DIFFICULTIES.EASY, "score": {"penalty": 0, "bonus": 2}, "images": {
 			"h": preload("res://assets/objects/water1x1-H.png"),
 			"v": preload("res://assets/objects/water1x1-V.png")
 		}},
@@ -149,6 +148,164 @@ const ITEMS: Dictionary = {
 const WEEKDAY_GRID_SLOTS: Dictionary = {"rows": 5, "columns": 4}
 const WEEKEND_GRID_SLOTS: Dictionary = {"rows": 5, "columns": 3}
 
+var INITIAL_HEALTH: int = 10
+
+var tasks_1 = {
+	1: {
+		"type": ITEM_TYPES.STONE,
+		"difficulty": DIFFICULTIES.EASY,
+		"description": "קלאסית 1/6 - למצוא רפרנס והשראות",
+		"completed": false
+	},
+	2: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.MEDIUM,
+		"description": "קלאסית 2/6 -הכנת פרזנטציה וסטוריבורד",
+		"completed": false
+	},
+	3: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.MEDIUM,
+		"description": "קלאסית 3/6 - גיבוש ותזמון אנימטיק",
+		"completed": false
+	},
+	4: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "קלאסית 4/6 - חידוד ואינמוצ 6 שניות",
+		"completed": false
+	},
+	5: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.MEDIUM,
+		"description": "קלאסית 5/6 - סאונד ועריכה",
+		"completed": false
+	},
+	6: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "קלאסית 6/6 - הגשה סופית באנימציה קלאסית",
+		"completed": false
+	},
+}
+
+var tasks_2 = {
+	1: {
+		"type": ITEM_TYPES.STONE,
+		"difficulty": DIFFICULTIES.EASY,
+		"description": "סטופ 1/6 - טסטים",
+		"completed": false
+	},
+	2: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.EASY,
+		"description": "סטופ 2/6 - הכנת פיצ’ וגיבוש רעיון סופי",
+		"completed": false
+	},
+	3: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "סטופ 3/6 - צילומים",
+		"completed": false
+	},
+	4: {
+		"type": ITEM_TYPES.STONE,
+		"difficulty": DIFFICULTIES.MEDIUM,
+		"description": "סטופ 4/6 - פגישות אישיות",
+		"completed": false
+	},
+	5: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "סטופ 5/6 - עריכה",
+		"completed": false
+	},
+	6: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "סטופ 6/6 - הגשה סופית בסטופ מושן",
+		"completed": false
+	},
+}
+
+var tasks_3 = {
+	1: {
+		"type": ITEM_TYPES.STONE,
+		"difficulty": DIFFICULTIES.EASY,
+		"description": "תלת 1/7 - גיבוש רפרנסים",
+		"completed": false
+	},
+	2: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.MEDIUM,
+		"description": "תלת 2/7 - גיבוש ומידול הסביבה",
+		"completed": false
+	},
+	3: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.EASY,
+		"description": "תלת 3/7 - לייאאוט ראשוני של הדמות",
+		"completed": false
+	},
+	4: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.MEDIUM,
+		"description": "תלת 4/7 - פוזות וברייקדאונים",
+		"completed": false
+	},
+	5: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "תלת 51/7 - טיקסטור הסביבה והוספת תאורה",
+		"completed": false
+	},
+	6: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "תלת 6/7 - העברת התרגיל לאוטו וחידוד סופי של האנימציה",
+		"completed": false
+	},
+	7: {
+		"type": ITEM_TYPES.IRON,
+		"difficulty": DIFFICULTIES.HARD,
+		"description": "תלת 7/7 - הגשה סופית בתחלת מימד",
+		"completed": false
+	},
+}
+
+const WATER_TASK_DESCRIPTIONS = [
+"לישון",
+"לאכול",
+"לכבס את הבגדים",
+"להתקשר להורים",
+"לבלות עם החברים",
+"לצפות בסדרה",
+'לקרוא בתנ"ך',
+"להתעסק בתחביב",
+"לצייר",
+"לשחק במשחק מחשב"
+]
+
+const EARTH_TASK_DESCRIPTIONS = [
+"חדר כושר",
+"פגישה עם פסיכולוג",
+"לטייל בטבע"
+]
+
+
+const EASY_AND_MEDIUM_METAL_AND_STONE = [
+"כתיבת תרגיל בתסריט",
+"גיבוש רעיון ותחילת מחקר לפרוס",
+"משמרת בעבודה",
+"רישומים לקורס רישום",
+"לטייל עם הכלב",
+"להתקשר לבנק",
+"לטפל בבירוקרטיה",
+"לעשות קניות לבית",
+"נקיון בבית"
+]
+
+var week: int = 0
 var is_dragging = false
 var drag_preview: Node
 var cell_size = {
@@ -197,8 +354,12 @@ func _play_sfx(type: SFXs) -> void:
 
 	player.play()
 
-func _play_animations(animations: Array[ANIMATIONS]) -> void:
+func _play_animations(animations: Array[ANIMATIONS], reverse: bool = false) -> void:
 	for animation in animations:
-		player_animations.play(ANIMATION[animation])
-		screen_animations.play(ANIMATION[animation])
+		if reverse:
+			player_animations.play_backwards(ANIMATION[animation])
+			screen_animations.play_backwards(ANIMATION[animation])
+		else:
+			player_animations.play(ANIMATION[animation])
+			screen_animations.play(ANIMATION[animation])
 		await player_animations.animation_finished

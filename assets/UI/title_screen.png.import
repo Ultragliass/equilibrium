@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbr82aha6np06"
-path="res://.godot/imported/weekday_grid.jpg-c6fd5400e874073c28b2fd1176383a14.ctex"
+uid="uid://chxbofb645iae"
+path="res://.godot/imported/title_screen.png-2ab78109e0282d75dfd41fb8ad46adf8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/weekday_grid.jpg"
-dest_files=["res://.godot/imported/weekday_grid.jpg-c6fd5400e874073c28b2fd1176383a14.ctex"]
+source_file="res://assets/UI/title_screen.png"
+dest_files=["res://.godot/imported/title_screen.png-2ab78109e0282d75dfd41fb8ad46adf8.ctex"]
 
 [params]
 

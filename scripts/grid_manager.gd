@@ -21,6 +21,7 @@ func init(grid_rows: int, grid_columns: int, grid_cell_size: Vector2) -> void:
 	mouse_exited.connect(_on_mouse_exited)
 
 	print(self.name, " - Grid Initialized: Rows=", rows, ", Columns=", columns)
+	
 	_initialize_empty_grid()
 
 func _input(event: InputEvent) -> void:
@@ -38,7 +39,7 @@ func _initialize_empty_grid() -> void:
 			grid[i][j] = null
 
 func _drop_data(_pos: Vector2, data: Variant) -> void:
-	data.init(Global.drag_preview.shape, data.images, data.category)
+	data.init(Global.drag_preview.shape, data.images, data.category, data.score, data.description, data.task_data, data.shape_type)
 	data.current_rotation = Global.drag_preview.current_rotation
 	data.z_index = 1
 
@@ -366,7 +367,7 @@ func _find_item_start_x(item: Node, row: int, col: int) -> int:
 # Helper function to update preview transform
 func _update_preview_transform(coords: Vector2, shape: Array) -> void:
 	drop_preview.current_rotation = Global.drag_preview.current_rotation
-	drop_preview.init(Global.drag_preview.shape, drop_preview.images, drop_preview.category)
+	drop_preview.init(Global.drag_preview.shape, drop_preview.images, drop_preview.category, drop_preview.score, drop_preview.description, drop_preview.task_data)
 	drop_preview.position = coords * cell_size
 
 	last_preview_pos = coords
@@ -381,7 +382,10 @@ func _create_drop_preview() -> void:
 	drop_preview.init(
 		Global.drag_preview.shape.duplicate(true),
 		Global.drag_preview.images,
-		Global.drag_preview.category
+		Global.drag_preview.category,
+		Global.drag_preview.score,
+		Global.drag_preview.description,
+		Global.drag_preview.task_data
 	)
 	
 	drop_preview.current_rotation = Global.drag_preview.current_rotation

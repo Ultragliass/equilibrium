@@ -1,4 +1,4 @@
-[gd_scene load_steps=115 format=3 uid="uid://bh0yq7fqggbpj"]
+[gd_scene load_steps=117 format=3 uid="uid://bh0yq7fqggbpj"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_rx278"]
 [ext_resource type="Texture2D" uid="uid://cumc4h85ap8h" path="res://assets/animations/death/doll0045.png" id="3_3gxcn"]
@@ -112,6 +112,8 @@
 [ext_resource type="Texture2D" uid="uid://cwspfr3a1jwgs" path="res://assets/animations/stop_normal_walk/screen0012.png" id="106_jj5cy"]
 [ext_resource type="Texture2D" uid="uid://cqtouiody7m8p" path="res://assets/animations/stop_normal_walk/screen0013.png" id="107_jo6n0"]
 [ext_resource type="Texture2D" uid="uid://b4gubqaabokwm" path="res://assets/animations/stop_normal_walk/screen0014.png" id="108_78ywe"]
+[ext_resource type="Texture2D" uid="uid://cos44aureg26u" path="res://assets/UI/background_image.png" id="109_6hehm"]
+[ext_resource type="Texture2D" uid="uid://chxbofb645iae" path="res://assets/UI/title_screen.png" id="113_5yv0d"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ruhv5"]
 animations = [{
@@ -530,28 +532,51 @@ script = ExtResource("3_tx0a1")
 z_index = 1
 position = Vector2(960, 540)
 sprite_frames = SubResource("SpriteFrames_ruhv5")
-animation = &"idle"
+animation = &"normal_walk"
 autoplay = "idle"
 
 [node name="ScreenAnimations" type="AnimatedSprite2D" parent="Background"]
 z_index = 2
 position = Vector2(960, 540)
 sprite_frames = SubResource("SpriteFrames_lilec")
-animation = &"idle"
+animation = &"normal_walk"
 autoplay = "idle"
 
-[node name="SettingsButton" type="Button" parent="."]
+[node name="BackgroundImage" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("109_6hehm")
+
+[node name="FinishButton" type="Button" parent="."]
 top_level = true
-z_index = 1
+z_index = 7
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -58.5
+offset_right = 58.5
+offset_bottom = 31.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 47
+text = "Complete Day"
+
+[node name="MenuButton" type="Button" parent="."]
+top_level = true
+z_index = 7
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -8.0
-offset_bottom = 8.0
+offset_left = -53.0
+offset_bottom = 31.0
 grow_horizontal = 0
 mouse_force_pass_scroll_events = false
-text = "Settings"
+text = "Menu"
 
 [node name="WeekdayGridManager" type="Control" parent="."]
 anchors_preset = 0
@@ -575,7 +600,7 @@ bus = &"Music"
 
 [node name="TitleScreen" parent="." instance=ExtResource("6_ch7q2")]
 top_level = true
-z_index = 2
+z_index = 7
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -583,4 +608,5 @@ anchor_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 1
 mouse_filter = 0
+texture = ExtResource("113_5yv0d")
 script = ExtResource("7_g44fg")

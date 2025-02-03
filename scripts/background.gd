@@ -4,7 +4,7 @@ func _can_drop_data(_pos: Vector2, _data: Variant) -> bool:
     return true
 
 func _drop_data(_pos: Vector2, data: Variant) -> void:
-    data.init(Global.drag_preview.shape, data.images, data.category)
+    data.init(Global.drag_preview.shape, data.images, data.category, data.score, data.description, data.task_data, data.shape_type)
     data.current_rotation = Global.drag_preview.current_rotation
     data.z_index = 5
     

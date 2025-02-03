@@ -1,18 +1,40 @@
 extends Control
 
 var shape: Array = []
-var category: Global.ITEM_TYPES
 var images: Dictionary
+var category: Global.ITEM_TYPES
+var score: Dictionary
+var description: String
+var task_data: Dictionary
+var shape_type: String
 var current_rotation: int:
 	set(value):
 		current_rotation = value % 4
 		_setup_image()
 
-func init(item_shape: Array, item_images: Dictionary, item_category: Global.ITEM_TYPES) -> void:
+func init(item_shape: Array,
+		item_images: Dictionary,
+		item_category: Global.ITEM_TYPES,
+		item_score: Dictionary,
+		item_description: String,
+		item_task_data: Dictionary = {"is_unique": false},
+		item_shape_type: String = ""
+		) -> void:
+
 	shape = item_shape
-	category = item_category
 	images = item_images
+	category = item_category
+	score = item_score
+	description = item_description
+	task_data = item_task_data
+	shape_type = item_shape_type
 	z_index = 5
+
+	var dimensions = str(shape[0].size()) + "x" + str(shape.size()) if shape_type.is_empty() else shape_type
+	var scores = "\n" + "Penalty: " + str(score.penalty) + "\nBonus: " + str(score.bonus)
+
+	tooltip_text = description + "\n" + dimensions + scores
+
 	_setup_image()
 
 # Helper function to create the item image
@@ -82,7 +104,7 @@ func _get_drag_data(_at_position: Vector2) -> Control:
 # Helper function to create drag preview
 func _create_drag_preview() -> DragPreviewControl:
 	var drag_preview = duplicate()
-	drag_preview.init(shape, images, category)
+	drag_preview.init(shape, images, category, score, description, task_data, shape_type)
 	drag_preview.current_rotation = current_rotation
 	drag_preview.modulate.a = 0.5
 	
