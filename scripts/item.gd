@@ -31,7 +31,7 @@ func init(item_shape: Array,
 	z_index = 5
 
 	var dimensions = str(shape[0].size()) + "x" + str(shape.size()) if shape_type.is_empty() else shape_type
-	var scores = "\n" + "Penalty: " + str(score.penalty) + "\nBonus: " + str(score.bonus)
+	var scores = "\n" + "קנס: " + str(score.penalty) + "\nבונוס: " + str(score.bonus)
 
 	tooltip_text = description + "\n" + dimensions + scores
 
@@ -52,6 +52,9 @@ func _create_image_texture() -> TextureRect:
 	var texture = TextureRect.new()
 	texture.expand = true
 	texture.stretch_mode = TextureRect.STRETCH_SCALE
+	if task_data.is_unique:
+		texture.modulate = Color(1, 0.7, 0.7, 1)
+		
 	return texture
 
 # Helper function to setup the texture rotation

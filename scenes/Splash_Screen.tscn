@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://dh28x7dlrykg0"]
+
+[ext_resource type="Script" path="res://scripts/splash_screen.gd" id="1_3b5ht"]
+[ext_resource type="Texture2D" uid="uid://7eny6r2frx4c" path="res://assets/UI/splashscreen.png" id="2_epb2l"]
+[ext_resource type="AudioStream" uid="uid://b3266mtdruwcr" path="res://assets/sounds/sfx/miff_bork.wav" id="2_khvmp"]
+[ext_resource type="AudioStream" uid="uid://d2w81f8ufawf8" path="res://assets/sounds/sfx/startup.wav" id="3_8hg1b"]
+
+[node name="SplashScreen" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3b5ht")
+
+[node name="Logo" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_epb2l")
+expand_mode = 5
+stretch_mode = 3
+
+[node name="Bork" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_khvmp")
+volume_db = 10.0
+
+[node name="Startup" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_8hg1b")
+
+[connection signal="finished" from="Startup" to="." method="_on_startup_finished"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cdm4lrfyte6fk"]
 
-[ext_resource type="Texture2D" uid="uid://bmxjwtcduxgg" path="res://assets/title_screen.png" id="1_xxr3b"]
+[ext_resource type="Texture2D" uid="uid://bs61ngx6jm48y" path="res://assets/UI/button.png" id="1_gc7qj"]
 
 [node name="TitleScreen" type="TextureRect"]
 anchors_preset = 15
@@ -8,20 +8,61 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_xxr3b")
 
-[node name="StartGameButton" type="Button" parent="."]
+[node name="StartGameButton" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 1267.0
 offset_top = 483.0
-offset_right = 1509.0
-offset_bottom = 616.0
-text = "START GAME"
+offset_right = 1567.0
+offset_bottom = 682.0
+scale = Vector2(0.8, 0.8)
+texture_normal = ExtResource("1_gc7qj")
+texture_pressed = ExtResource("1_gc7qj")
+texture_hover = ExtResource("1_gc7qj")
+texture_disabled = ExtResource("1_gc7qj")
+texture_focused = ExtResource("1_gc7qj")
 
-[node name="SettingsButton" type="Button" parent="."]
+[node name="Label" type="Label" parent="StartGameButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "התחל משחק "
+
+[node name="SettingsButton" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 1267.0
 offset_top = 683.0
 offset_right = 1509.0
 offset_bottom = 816.0
-text = "SETTINGS"
+scale = Vector2(0.8, 0.8)
+texture_normal = ExtResource("1_gc7qj")
+texture_pressed = ExtResource("1_gc7qj")
+texture_hover = ExtResource("1_gc7qj")
+texture_disabled = ExtResource("1_gc7qj")
+texture_focused = ExtResource("1_gc7qj")
+
+[node name="Label" type="Label" parent="SettingsButton"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+text = "הגדרות"

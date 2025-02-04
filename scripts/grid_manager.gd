@@ -39,7 +39,7 @@ func _initialize_empty_grid() -> void:
 			grid[i][j] = null
 
 func _drop_data(_pos: Vector2, data: Variant) -> void:
-	data.init(Global.drag_preview.shape, data.images, data.category, data.score, data.description, data.task_data, data.shape_type)
+	data.init(Global.drag_preview.shape, data.images, data.category, data.score if data.category != Global.ITEM_TYPES.EARTH else {"bonus": 0, "penalty": 0}, data.description, data.task_data, data.shape_type)
 	data.current_rotation = Global.drag_preview.current_rotation
 	data.z_index = 1
 

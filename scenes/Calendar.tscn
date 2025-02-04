@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv74h6ayx4r4f"]
+
+[ext_resource type="Texture2D" uid="uid://ce2gim80823fh" path="res://assets/UI/calendar.png" id="1_flf8e"]
+[ext_resource type="Texture2D" uid="uid://bdexlyqk484jp" path="res://assets/UI/small_doll.png" id="2_ha5sy"]
+
+[node name="Calendar" type="TextureRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_flf8e")
+
+[node name="SmallDoll" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 1441.0
+offset_top = 421.0
+offset_right = 1532.0
+offset_bottom = 655.0
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_ha5sy")
+
+[node name="WeekLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -384.0
+offset_top = 42.0
+offset_right = 384.0
+offset_bottom = 248.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 150
+text = "שבוע מספר 1"
+
+[node name="HealthLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -249.5
+offset_top = 222.0
+offset_right = 249.5
+offset_bottom = 360.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 100
+text = "נקודות נפש 10"

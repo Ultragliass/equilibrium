@@ -1,8 +1,8 @@
 extends TextureRect
 
 @onready var settings_screen = preload("res://scenes/Settings_Screen.tscn")
-@onready var start_game_button: Button = $StartGameButton
-@onready var settings_button: Button = $SettingsButton
+@onready var start_game_button: TextureButton = $StartGameButton
+@onready var settings_button: TextureButton = $SettingsButton
 
 func _ready() -> void:
     _connect_signals()
@@ -17,7 +17,6 @@ func _on_start_game_button_pressed() -> void:
     tween.tween_property(self, "modulate", Color(0, 0, 0, 0), 1)
     await tween.finished
     visible = false
-    get_parent()._start_game()
-
+    
 func _on_settings_button_pressed() -> void:
     add_child(settings_screen.instantiate())
