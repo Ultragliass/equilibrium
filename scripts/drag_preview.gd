@@ -1,13 +1,13 @@
 class_name DragPreviewControl
 extends Control
 
-var drag_preview: Control
+var drag_preview: Item
 var original_shape: Array
 
 func _ready() -> void:
     set_process_input(true)
 
-func setup(preview: Control) -> void:
+func setup(preview: Item) -> void:
     drag_preview = preview
     original_shape = preview.shape.duplicate(true)
     add_child(preview)

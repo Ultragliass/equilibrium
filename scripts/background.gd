@@ -33,7 +33,7 @@ func _calculate_target_position(shape: Array) -> Vector2:
 	return get_global_mouse_position() - Vector2(width, height)
 
 # Helper function to handle reparenting of items to the main play area
-func _handle_reparenting(data: Control) -> void:
+func _handle_reparenting(data: Item) -> void:
 	if data.get_parent().name != "Main":
 		var grid_manager: Control = data.get_parent()
 		grid_manager._remove_item_from_grid(data)

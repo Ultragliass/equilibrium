@@ -5,10 +5,10 @@ var cell_size = Vector2(100, 100)
 var rows: int
 var columns: int
 
-var drop_preview: Node = null
+var drop_preview: Item = null
 var last_preview_pos: Vector2 = Vector2.ZERO
 var last_preview_rotation: int = 0
-var dragging_item: Node = null
+var dragging_item: Item = null
 
 func _ready() -> void:
 	set_process_input(true)
@@ -162,7 +162,7 @@ func _update_drop_preview() -> void:
 		_show_drop_preview(grid_coords, Global.drag_preview.shape)
 
 # Helper function to place an item on the grid
-func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
+func _place_item_at(grid_x: int, grid_y: int, item: Item) -> Dictionary:
 	if not _can_place_item_at(grid_x, grid_y, item):
 		print(self.name, " - Failed to place item at", grid_x, ",", grid_y)
 		return {"is_placed": false, "grid_coords": 0, "grid_y": 0}
@@ -178,7 +178,7 @@ func _place_item_at(grid_x: int, grid_y: int, item: Node) -> Dictionary:
 	return {"is_placed": true, "grid_x": grid_x, "grid_y": grid_y}
 
 # Helper function to check if an item can be placed at a given grid position
-func _can_place_item_at(grid_x: int, grid_y: int, item: Control) -> bool:
+func _can_place_item_at(grid_x: int, grid_y: int, item: Item) -> bool:
 	var shape = item.shape
 	for row in range(shape.size()):
 		for col in range(shape[row].size()):
@@ -197,7 +197,7 @@ func _can_place_item_at(grid_x: int, grid_y: int, item: Control) -> bool:
 	return true
 
 # Helper function to remove an item from the grid
-func _remove_item_from_grid(item: Node) -> void:
+func _remove_item_from_grid(item: Item) -> void:
 	for row in range(rows):
 		for col in range(columns):
 			if grid[row][col] == item:
@@ -205,7 +205,7 @@ func _remove_item_from_grid(item: Node) -> void:
 				print(self.name, " - Removed item from", col, ",", row)
 
 # Helper function to make an item fall to its lowest possible position
-func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
+func _make_item_fall(item: Item, start_x: int, start_y: int) -> bool:
 	var final_y = start_y
 	var iron_items = []
 
@@ -277,7 +277,7 @@ func _make_item_fall(item: Node, start_x: int, start_y: int) -> bool:
 	return false
 
 # Make an item float upwards
-func _make_item_float(item: Node, start_x: int, start_y: int) -> bool:
+func _make_item_float(item: Item, start_x: int, start_y: int) -> bool:
 	if start_y == 0:
 		return false
 	
@@ -306,14 +306,14 @@ func _make_item_float(item: Node, start_x: int, start_y: int) -> bool:
 	return false
 
 # Helper function to remove item from an old position
-func _remove_item_from_old_position(item: Node, start_x: int, start_y: int) -> void:
+func _remove_item_from_old_position(item: Item, start_x: int, start_y: int) -> void:
 	for row in range(item.shape.size()):
 		for col in range(item.shape[0].size()):
 			if item.shape[row][col] == 1:
 				grid[start_y + row][start_x + col] = null
 
 # Helper function to place an item in a new position
-func _place_item_in_new_position(item: Node, start_x: int, fall_y: int) -> void:
+func _place_item_in_new_position(item: Item, start_x: int, fall_y: int) -> void:
 	for row in range(item.shape.size()):
 		for col in range(item.shape[0].size()):
 			if item.shape[row][col] == 1:
@@ -322,7 +322,7 @@ func _place_item_in_new_position(item: Node, start_x: int, fall_y: int) -> void:
 	create_tween().tween_property(item, "position", Vector2(start_x, fall_y) * cell_size, 0.1)
 
 
-func _pop_item_to_background(item: Node) -> void:
+func _pop_item_to_background(item: Item) -> void:
 	var main_scene = get_node("/root/Main")
 	_remove_item_from_grid(item)
 	item.z_index = 5
@@ -359,7 +359,7 @@ func _is_within_bounds(cell_x: int, cell_y: int) -> bool:
 	return cell_x >= 0 and cell_y >= 0 and cell_x < columns and cell_y < rows
 
 # Helper to find leftmost position of an item
-func _find_item_start_x(item: Node, row: int, col: int) -> int:
+func _find_item_start_x(item: Item, row: int, col: int) -> int:
 	while col > 0 and grid[row][col - 1] == item:
 		col -= 1
 	return col

@@ -308,9 +308,9 @@ const EASY_AND_MEDIUM_METAL_AND_STONE = [
 var week: int = 0
 var low_health: bool = false
 var godmode: bool = false
-var is_dragging = false
-var drag_preview: Node
-var cell_size = {
+var is_dragging: bool = false
+var drag_preview: Item
+var cell_size: Dictionary = {
 	"width": 0,
 	"height": 0
 }

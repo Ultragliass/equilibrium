@@ -1,4 +1,4 @@
-extends Control
+class_name Item extends Control
 
 var shape: Array = []
 var images: Dictionary
